@@ -1,6 +1,11 @@
 import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
+// var can = require("socketcan");
+// import { can } from "socketcan";
+//import pkg from 'socketcan';
+//const { can } = pkg;
+import * as can from "socketcan";
 
 
 const dev = process.env.NODE_ENV !== "production";
@@ -19,10 +24,9 @@ app.prepare().then(() => {
         // socket.emit("hello", {"id": "Test", "data":"Wichtige Daten"});
     });
 
-    var can = require("socketcan");
 
     var channel = can.createRawChannel("vcan0", true);
-    channel.addListener("onMessage", function(msg) { socket.emit("can-message", msg); } );
+    channel.addListener("onMessage", function(msg) { io.emit("can-message", msg); } );
     channel.start();
 
     httpServer
