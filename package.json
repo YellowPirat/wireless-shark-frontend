@@ -9,9 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "chart.js": "^4.4.6",
+    "gridstack": "^11.0.1",
     "next": "15.0.2",
     "react": "19.0.0-rc-02c0e824-20241028",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
+    "react-grid-layout": "^1.5.0",
+    "recharts": "^2.13.3",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
     "socketcan": "^4.0.5"
