@@ -144,18 +144,20 @@ export default function Home() {
 
     }, [messages]);
 
+
     useEffect(() => {
+
         if (typeof window !== 'undefined') {
             const gridInstance = GridStack.init({
                 float: true,
                 removable: true,
                 removeTimeout: 100,
                 margin: 10,
-                cellHeight: 60,
-                minRow: 1
+                cellHeight: 300,
+                minRow: 2
             })
             setGrid(gridInstance)
-
+/*
             // Event Listener für Änderungen
             gridInstance.on('change', () => {
                 const newItems = gridInstance.getGridItems().map(el => ({
@@ -168,13 +170,15 @@ export default function Home() {
                 }))
                 setItems(newItems)
             })
-
+*/
             return () => {
                 gridInstance.destroy()
             }
         }
     }, [])
 
+
+/*
     const createLineChart = () => {
         return (
             <ResponsiveContainer id="toll" width="100%" height="100%">
@@ -200,7 +204,8 @@ export default function Home() {
             </ResponsiveContainer>
         );
     };
-
+*/
+    /*
     useEffect(() => {
         if (grid) {
             grid.removeAll()
@@ -262,7 +267,7 @@ export default function Home() {
                 respCon.appendChild(lineChrt)
 
                 content.appendChild(respCon)
-                */
+
 
                 // div.appendChild(createLineChart())
                 div.id = "wichtig";
@@ -277,6 +282,7 @@ export default function Home() {
         }
     }, [grid, items])
 
+*/
     const saveLayout = () => {
         const layout = JSON.stringify(items)
         localStorage.setItem('dashboard-layout', layout)
@@ -320,29 +326,43 @@ export default function Home() {
                 >
                     Layout laden
                 </button>
-                <div className="grid-stack"></div>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>CAN ID</th>
-                        <th>Timestamp</th>
-                        <th>Data</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {messages.map((message, i) => {
-                        return (
-                            <tr key={i}>
-                                <td>{message.id}</td>
-                                <td>{new Date(message.ts_sec * 1000 + message.ts_usec / 1000).toISOString()}</td>
-                                <td>{new Uint8Array(message.data).toString('16')}</td>
-                            </tr>
-                        );
-                    })}
-                    </tbody>
-                </table>
+                <div className="grid-stack">
+                    <div className="grid-stack-item">
+                        <div className="grid-stack-item-content">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>CAN ID</th>
+                                    <th>Timestamp</th>
+                                    <th>Data</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {messages.map((message, i) => {
+                                    return (
+                                        <tr key={i}>
+                                            <td>{message.id}</td>
+                                            <td>{new Date(message.ts_sec * 1000 + message.ts_usec / 1000).toISOString()}</td>
+                                            <td>{new Uint8Array(message.data).toString('16')}</td>
+                                        </tr>
+                                    );
+                                })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div className="grid-stack-item">
+                        <div className="grid-stack-item-content">
+                            Zahl: {messages.map((message, i) => {
+                                return  (
 
+                                    <p key={i}>{new Uint8Array(message.data).toString('16')}</p>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    );
-}
+            );
+            }
