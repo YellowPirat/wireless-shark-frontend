@@ -1,3 +1,104 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { socket } from "./socket";
+import 'gridstack/dist/gridstack.min.css';
+import { GridStack } from 'gridstack';
+import { createRoot } from 'react-dom/client'
+
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+const testdata = [
+    {
+        "name": "Page A",
+        "uv": 4000,
+        "pv": 2400,
+        "amt": 2400
+    },
+    {
+        "name": "Page B",
+        "uv": 3000,
+        "pv": 1398,
+        "amt": 2210
+    },
+    {
+        "name": "Page C",
+        "uv": 2000,
+        "pv": 9800,
+        "amt": 2290
+    },
+    {
+        "name": "Page D",
+        "uv": 2780,
+        "pv": 3908,
+        "amt": 2000
+    },
+    {
+        "name": "Page E",
+        "uv": 1890,
+        "pv": 4800,
+        "amt": 2181
+    },
+    {
+        "name": "Page F",
+        "uv": 2390,
+        "pv": 3800,
+        "amt": 2500
+    },
+    {
+        "name": "Page G",
+        "uv": 3490,
+        "pv": 4300,
+        "amt": 2100
+    }
+]
+
+// Widgets
+const ClockWidget = () => (
+    <div className="p-4 bg-white rounded-lg shadow">
+        <h3 className="text-lg font-bold mb-2">Uhr</h3>
+        <div id="clock" className="text-2xl">{new Date().toLocaleTimeString()}</div>
+    </div>
+)
+
+const ChartWidget = () => (
+    <div className="p-4 bg-white rounded-lg shadow">
+        <h3 className="text-lg font-bold mb-2">Chart</h3>
+        <div className="h-48 bg-gray-100 flex items-center justify-center">
+            Chart Platzhalter
+        </div>
+    </div>
+)
+
+const WeatherWidget = () => (
+    <div className="p-4 bg-white rounded-lg shadow">
+        <h3 className="text-lg font-bold mb-2">Wetter</h3>
+        <div>23°C, Sonnig</div>
+    </div>
+)
+
+const WIDGET_MAP = {
+    clock: ClockWidget,
+    weather: WeatherWidget,
+    chart: ChartWidget
+}
+
+const DEFAULT_WIDGETS = [
+    { x: 0, y: 0, w: 4, h: 2, id: 'clock', content: 'clock' },
+    { x: 4, y: 0, w: 4, h: 2, id: 'weather', content: 'weather' },
+    { x: 8, y: 0, w: 4, h: 6, id: 'chart', content: 'chart' }
+]
+
+const renderWidget = (container, widgetType) => {
+    const Widget = WIDGET_MAP[widgetType]
+    if (Widget) {
+        const root = createRoot(container)
+        root.render(<Widget />)
+        return root
+    }
+    return null
+}
+
 export default function Home() {
     const [isConnected, setIsConnected] = useState(false);
     const [transport, setTransport] = useState("N/A");
@@ -58,18 +159,16 @@ export default function Home() {
         }
     }, []);
 
-    // Neue Funktion zum Hinzufügen eines Widgets
     const addWidget = () => {
         const newItem = {
-            x: 0, // Standardposition
+            x: 0,
             y: 0,
             w: 4,
             h: 2,
-            id: `widget-${items.length}`, // Einzigartige ID
-            content: 'chart', // Standardmäßig ein Chart-Widget
+            id: `widget-${items.length}`,
+            content: 'chart',
         };
-
-        setItems((prevItems) => [...prevItems, newItem]); // Neues Widget hinzufügen
+        setItems((prevItems) => [...prevItems, newItem]);
     };
 
     const saveLayout = () => {
@@ -136,7 +235,6 @@ export default function Home() {
                             gs-id={item.id}
                         >
                             <div className="grid-stack-item-content">
-                                {/* Render the widget */}
                                 {renderWidget(document.createElement('div'), item.content)}
                             </div>
                         </div>
