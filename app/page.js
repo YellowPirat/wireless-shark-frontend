@@ -1,4 +1,5 @@
 "use client";
+// import React from 'react';
 
 import { useEffect, useState } from "react";
 import { socket } from "./socket";
@@ -104,8 +105,9 @@ export default function Home() {
     const [transport, setTransport] = useState("N/A");
     const [messages, setMessages] = useState([]);
 
-    const [grid, setGrid] = useState(null);
-    const [items, setItems] = useState(DEFAULT_WIDGETS);
+    const [grid, setGrid] = useState(null)
+    const [items, setItems] = useState(DEFAULT_WIDGETS)
+
 
     useEffect(() => {
         if (socket.connected) {
@@ -139,9 +141,12 @@ export default function Home() {
             socket.off("connect", onConnect);
             socket.off("disconnect", onDisconnect);
         };
+
     }, [messages]);
 
+
     useEffect(() => {
+
         if (typeof window !== 'undefined') {
             const gridInstance = GridStack.init({
                 float: true,
@@ -149,47 +154,168 @@ export default function Home() {
                 removeTimeout: 100,
                 margin: 10,
                 cellHeight: 300,
-                minRow: 2,
-            });
-            setGrid(gridInstance);
-
+                minRow: 2
+            })
+            setGrid(gridInstance)
+/*
+            // Event Listener für Änderungen
+            gridInstance.on('change', () => {
+                const newItems = gridInstance.getGridItems().map(el => ({
+                    x: el.gridstackNode.x,
+                    y: el.gridstackNode.y,
+                    w: el.gridstackNode.w,
+                    h: el.gridstackNode.h,
+                    id: el.gridstackNode.id,
+                    content: el.gridstackNode.content
+                }))
+                setItems(newItems)
+            })
+*/
             return () => {
-                gridInstance.destroy();
-            };
+                gridInstance.destroy()
+            }
         }
-    }, []);
+    }, [])
 
+
+/*
+    const createLineChart = () => {
+        return (
+            <ResponsiveContainer id="toll" width="100%" height="100%">
+                <LineChart
+                    width={500}
+                    height={300}
+                    data={testdata}
+                    margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
+                    <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+                </LineChart>
+            </ResponsiveContainer>
+        );
+    };
+*/
+    /*
+    useEffect(() => {
+        if (grid) {
+            grid.removeAll()
+            items.forEach(item => {
+                const div = document.createElement('div')
+                div.className = 'grid-stack-item'
+                div.setAttribute('gs-x', item.x)
+                div.setAttribute('gs-y', item.y)
+                div.setAttribute('gs-w', item.w)
+                div.setAttribute('gs-h', item.h)
+                div.setAttribute('gs-id', item.id)
+
+                const content = document.createElement('div')
+                content.className = 'grid-stack-item-content'
+                /*
+                const respCon = document.createElement("ResponsiveContainer")
+
+                //respCon.setAttribute('width', "100")
+                //respCon.setAttribute('height', "100")
+                const lineChrt = document.createElement('LineChart')
+                lineChrt.setAttribute('width', 50)
+                lineChrt.setAttribute('height', 30)
+                lineChrt.setAttribute('data', testdata)
+                lineChrt.setAttribute('margin', {
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                })
+
+                const cGrid = document.createElement('CartesianGrid')
+                cGrid.setAttribute('strokeDasharray', "3 3")
+
+                const xAxis = document.createElement('XAxis')
+                xAxis.setAttribute('dataKey', "name")
+
+                const yAxis = document.createElement('YAxis')
+                const toolT = document.createElement('Tooltip')
+                const legen = document.createElement('Legend')
+                const line1 = document.createElement('Line')
+                line1.setAttribute('type', "monotone")
+                line1.setAttribute('dataKey', "pv")
+                line1.setAttribute('stroke', "#8884d8")
+                line1.setAttribute('activeDot', { r: 8 })
+
+                const line2 = document.createElement('Line')
+                line2.setAttribute('type', "monotone")
+                line2.setAttribute('dataKey', "uv")
+                line2.setAttribute('stroke', "#82ca9d")
+
+                lineChrt.appendChild(cGrid)
+                lineChrt.appendChild(xAxis)
+                lineChrt.appendChild(yAxis)
+                lineChrt.appendChild(toolT)
+                lineChrt.appendChild(legen)
+                lineChrt.appendChild(line1)
+                lineChrt.appendChild(line2)
+
+                respCon.appendChild(lineChrt)
+
+                content.appendChild(respCon)
+
+
+                // div.appendChild(createLineChart())
+                div.id = "wichtig";
+                div.innerHTML = createLineChart().innerHTML
+
+                //createLineChart()
+
+                // respCon.setAttribute('style', 'background-color: #00ff00')
+                // grid.makeWidget('#toll')
+                grid.addWidget(div)
+            })
+        }
+    }, [grid, items])
+
+*/
+    // Neue Funktion zum Hinzufügen eines Widgets
     const addWidget = () => {
         const newItem = {
-            x: 0,
+            x: 0, // Standardposition
             y: 0,
             w: 4,
             h: 2,
-            id: `widget-${items.length}`,
-            content: 'chart',
+            id: `widget-${items.length}`, // Einzigartige ID
+            content: 'chart', // Standardmäßig ein Chart-Widget
         };
-        setItems((prevItems) => [...prevItems, newItem]);
+
+        setItems((prevItems) => [...prevItems, newItem]); // Neues Widget hinzufügen
     };
 
     const saveLayout = () => {
-        const layout = JSON.stringify(items);
-        localStorage.setItem('dashboard-layout', layout);
-        alert('Layout gespeichert!');
-    };
+        const layout = JSON.stringify(items)
+        localStorage.setItem('dashboard-layout', layout)
+        alert('Layout gespeichert!')
+    }
 
     const loadLayout = () => {
-        const layout = localStorage.getItem('dashboard-layout');
+        const layout = localStorage.getItem('dashboard-layout')
         if (layout) {
-            setItems(JSON.parse(layout));
+            setItems(JSON.parse(layout))
         }
-    };
+    }
 
     const clearAll = () => {
         if (grid) {
-            grid.removeAll();
-            setItems([]);
+            grid.removeAll()
+            setItems([])
         }
-    };
+    }
 
     return (
         <div>
@@ -214,8 +340,6 @@ export default function Home() {
                 >
                     Layout laden
                 </button>
-
-                {/* Neuer Button zum Hinzufügen eines Widgets */}
                 <button
                     onClick={addWidget}
                     className="bg-yellow-500 text-white px-4 py-2 rounded"
@@ -224,23 +348,42 @@ export default function Home() {
                 </button>
 
                 <div className="grid-stack">
-                    {items.map((item) => (
-                        <div
-                            key={item.id}
-                            className="grid-stack-item"
-                            gs-x={item.x}
-                            gs-y={item.y}
-                            gs-w={item.w}
-                            gs-h={item.h}
-                            gs-id={item.id}
-                        >
-                            <div className="grid-stack-item-content">
-                                {renderWidget(document.createElement('div'), item.content)}
-                            </div>
+                    <div className="grid-stack-item">
+                        <div className="grid-stack-item-content">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>CAN ID</th>
+                                    <th>Timestamp</th>
+                                    <th>Data</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {messages.map((message, i) => {
+                                    return (
+                                        <tr key={i}>
+                                            <td>{message.id}</td>
+                                            <td>{new Date(message.ts_sec * 1000 + message.ts_usec / 1000).toISOString()}</td>
+                                            <td>{new Uint8Array(message.data).toString('16')}</td>
+                                        </tr>
+                                    );
+                                })}
+                                </tbody>
+                            </table>
                         </div>
-                    ))}
+                    </div>
+                    <div className="grid-stack-item">
+                        <div className="grid-stack-item-content">
+                            Zahl: {messages.map((message, i) => {
+                                return  (
+
+                                    <p key={i}>{new Uint8Array(message.data).toString('16')}</p>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    );
-}
+            );
+            }
