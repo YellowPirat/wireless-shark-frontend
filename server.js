@@ -6,6 +6,7 @@ import { Server } from "socket.io";
 //import pkg from 'socketcan';
 //const { can } = pkg;
 import * as can from "socketcan";
+// import { DbcToKcdConverter } from './dbcToKcd';
 
 
 const dev = process.env.NODE_ENV !== "production";
@@ -18,15 +19,17 @@ const handler = app.getRequestHandler();
 app.prepare().then(() => {
     const httpServer = createServer(handler);
 
+    // const converter = new DbcToKcdConverter();
+    // converter.convertFile('input.dbc', 'output.kcd');
+/*
     const io = new Server(httpServer);
 
     io.on("connection", (socket) => {
         // socket.emit("hello", {"id": "Test", "data":"Wichtige Daten"});
     });
-
-
+*/
     var channel = can.createRawChannel("vcan0", true);
-    channel.addListener("onMessage", function(msg) { io.emit("can-message", msg); } );
+    //channel.addListener("onMessage", function(msg) { // io.emit("can-message", msg); } );
     channel.start();
 
     httpServer

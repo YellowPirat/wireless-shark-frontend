@@ -1,58 +1,33 @@
 "use client";
 // import React from 'react';
 
+import Link from 'next/link'
+import { usePathname } from 'next/navigation';
+
 import { useEffect, useState } from "react";
 import { socket } from "./socket";
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
 import { createRoot } from 'react-dom/client'
 
+import React from 'react';
+
+import { cn } from "@/lib/utils"
+// import { Icons } from "@/components/icons"
+import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger,
+    navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+
+// import Plot from 'react-plotly.js';
+
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const testdata = [
-    {
-        "name": "Page A",
-        "uv": 4000,
-        "pv": 2400,
-        "amt": 2400
-    },
-    {
-        "name": "Page B",
-        "uv": 3000,
-        "pv": 1398,
-        "amt": 2210
-    },
-    {
-        "name": "Page C",
-        "uv": 2000,
-        "pv": 9800,
-        "amt": 2290
-    },
-    {
-        "name": "Page D",
-        "uv": 2780,
-        "pv": 3908,
-        "amt": 2000
-    },
-    {
-        "name": "Page E",
-        "uv": 1890,
-        "pv": 4800,
-        "amt": 2181
-    },
-    {
-        "name": "Page F",
-        "uv": 2390,
-        "pv": 3800,
-        "amt": 2500
-    },
-    {
-        "name": "Page G",
-        "uv": 3490,
-        "pv": 4300,
-        "amt": 2100
-    }
-]
 
 // Widgets
 const ClockWidget = () => (
@@ -107,6 +82,11 @@ export default function Home() {
 
     const [grid, setGrid] = useState(null)
     const [items, setItems] = useState(DEFAULT_WIDGETS)
+
+    const pathname = usePathname();
+    const isActive = (href) => {
+        return pathname === href
+    };
 
 
     useEffect(() => {
@@ -305,6 +285,45 @@ export default function Home() {
 
     return (
         <div>
+            <NavigationMenu className="!max-w-full !block">
+                <NavigationMenuList>
+                    <NavigationMenuItem className={cn( "flex-1", isActive('/') ? 'bg-accent text-accent-foreground' : 'bg-muted')}>
+                        <Link href="/">Home</Link>
+                    </NavigationMenuItem>
+                    <NavigationMenuItem className={cn( "flex-1", isActive('/upload') ? 'bg-accent text-accent-foreground' : 'bg-muted')}>
+                        <Link href="/upload">Image Upload</Link>
+                    </NavigationMenuItem>
+                    <NavigationMenuItem className={cn( "flex-1", isActive('/settings') ? 'bg-accent text-accent-foreground' : 'bg-muted')}>
+                        <Link href="/settings">Settings</Link>
+                    </NavigationMenuItem>
+                </NavigationMenuList>
+            </NavigationMenu>
+            <NavigationMenu>
+                <NavigationMenuList>
+                    <NavigationMenuItem>
+                        <Link href="/" legacyBehavior passHref>
+                            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                Home
+                            </NavigationMenuLink>
+                        </Link>
+                    </NavigationMenuItem>
+                    <NavigationMenuItem>
+                        <Link href="/liveView" legacyBehavior passHref>
+                            <NavigationMenuLink  className={navigationMenuTriggerStyle()}>
+                                Live View
+                            </NavigationMenuLink>
+                        </Link>
+                    </NavigationMenuItem>
+                    <NavigationMenuItem  className={navigationMenuTriggerStyle()}>
+                        <Link href="/settings" legacyBehavior passHref>
+                            <NavigationMenuLink>
+                                Settings
+                            </NavigationMenuLink>
+                        </Link>
+                    </NavigationMenuItem>
+                </NavigationMenuList>
+            </NavigationMenu>
+
             <p>Status: {isConnected ? "connected" : "disconnected"}</p>
             <p>Transport: {transport}</p>
             <div>
@@ -326,6 +345,7 @@ export default function Home() {
                 >
                     Layout laden
                 </button>
+
                 <div className="grid-stack">
                     <div className="grid-stack-item">
                         <div className="grid-stack-item-content">
@@ -353,12 +373,9 @@ export default function Home() {
                     </div>
                     <div className="grid-stack-item">
                         <div className="grid-stack-item-content">
-                            Zahl: {messages.map((message, i) => {
-                                return  (
 
-                                    <p key={i}>{new Uint8Array(message.data).toString('16')}</p>
-                                );
-                            })}
+                            Zahl:
+                            {messages.at(-1) ? new Uint8Array(messages.at(-1).data).toString('16') : 42}
                         </div>
                     </div>
                     </div>
