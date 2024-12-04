@@ -2,37 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
- */
+
 /*
 .grid-stack {
   background: #000000;
 }
 */
-/*
+
 .grid-stack-item {
   background: white;
 }
 
-*/
+
 .grid-stack-item-content {
-  background: black;
-  color: white;
+  background: white;
+  color: color;
+  /* border: 2px solid black;*/
 }
 
-/*
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
 }
-*/
+
 body {
   /* color: var(--foreground);
   background: var(--background); */
