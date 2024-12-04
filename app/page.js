@@ -1,19 +1,18 @@
 "use client";
-// import React from 'react';
 
-import Link from 'next/link'
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
-import { useEffect, useState } from "react";
-import { socket } from "./socket";
+import { useEffect, useState, useRef } from "react";
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
-import { createRoot } from 'react-dom/client'
-
 import React from 'react';
+import { cn } from "@/lib/utils";
+// import {DBCData, loadDBCFile} from "./dbc/dbc-parser.tsx";
+import {DBCParser, loadDBCFile} from './dbc/dbc-parser';
+import CANSignalDisplay from "./dbc/CAN-Signal-Display.tsx";
+import DBCViewer from "./dbc/page.tsx";
+// import {loadDBCFile, DBCData, Message, Signal} from './dbc-parser';
 
-import { cn } from "@/lib/utils"
-// import { Icons } from "@/components/icons"
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -22,111 +21,84 @@ import {
     NavigationMenuList,
     NavigationMenuTrigger,
     navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
-
-// import Plot from 'react-plotly.js';
+} from "@/components/ui/navigation-menu";
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 
-// Widgets
-const ClockWidget = () => (
-    <div className="p-4 bg-white rounded-lg shadow">
-        <h3 className="text-lg font-bold mb-2">Uhr</h3>
-        <div id="clock" className="text-2xl">{new Date().toLocaleTimeString()}</div>
-    </div>
-)
-
-const ChartWidget = () => (
-    <div className="p-4 bg-white rounded-lg shadow">
-        <h3 className="text-lg font-bold mb-2">Chart</h3>
-        <div className="h-48 bg-gray-100 flex items-center justify-center">
-            Chart Platzhalter
-        </div>
-    </div>
-)
-
-const WeatherWidget = () => (
-    <div className="p-4 bg-white rounded-lg shadow">
-        <h3 className="text-lg font-bold mb-2">Wetter</h3>
-        <div>23°C, Sonnig</div>
-    </div>
-)
-
-const WIDGET_MAP = {
-    clock: ClockWidget,
-    weather: WeatherWidget,
-    chart: ChartWidget
-}
-
-const DEFAULT_WIDGETS = [
-    { x: 0, y: 0, w: 4, h: 2, id: 'clock', content: 'clock' },
-    { x: 4, y: 0, w: 4, h: 2, id: 'weather', content: 'weather' },
-    { x: 8, y: 0, w: 4, h: 6, id: 'chart', content: 'chart' }
-]
-
-const renderWidget = (container, widgetType) => {
-    const Widget = WIDGET_MAP[widgetType]
-    if (Widget) {
-        const root = createRoot(container)
-        root.render(<Widget />)
-        return root
-    }
-    return null
-}
-
 export default function Home() {
     const [isConnected, setIsConnected] = useState(false);
-    const [transport, setTransport] = useState("N/A");
     const [messages, setMessages] = useState([]);
-
-    const [grid, setGrid] = useState(null)
-    const [items, setItems] = useState(DEFAULT_WIDGETS)
+    const [grid, setGrid] = useState(null);
+    const wsRef = useRef(null);
 
     const pathname = usePathname();
-    const isActive = (href) => {
-        return pathname === href
-    };
+    const isActive = (href) => pathname === href;
+
+    const [dbcData, setDbcData] = useState(null);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchDBC = async () => {
+            try {
+                const data = await loadDBCFile('/api/dbc/input.dbc'); // Pfad zur API-Route anpassen
+                console.log(data);
+                setDbcData(data);
+            } catch (err) {
+                setError('Fehler beim Laden der DBC-Datei Grid');
+            }
+        };
+        fetchDBC();
+    }, []);
+
+    if (error) {
+        return (
+            <div className="p-4 text-red-600">
+                {error}
+            </div>
+        );
+    }
 
 
     useEffect(() => {
-        if (socket.connected) {
-            onConnect();
-        }
+        // Create WebSocket connection
+        wsRef.current = new WebSocket('ws://192.168.70.6:8080/ws'); // Adjust the URL to match your Go backend
 
-        function onConnect() {
+        wsRef.current.onopen = () => {
+            console.log('Connected to WebSocket');
             setIsConnected(true);
-            setTransport(socket.io.engine.transport.name);
-
-            socket.io.engine.on("upgrade", (transport) => {
-                setTransport(transport.name);
-            });
-        }
-
-        function onDisconnect() {
-            setIsConnected(false);
-            setTransport("N/A");
-        }
-
-        function onCANMessage(msg) {
-            console.log(msg);
-            setMessages([...messages, msg]);
-        }
-
-        socket.on("connect", onConnect);
-        socket.on("disconnect", onDisconnect);
-        socket.on("can-message", onCANMessage);
-
-        return () => {
-            socket.off("connect", onConnect);
-            socket.off("disconnect", onDisconnect);
         };
 
-    }, [messages]);
+        wsRef.current.onclose = () => {
+            console.log('Disconnected from WebSocket');
+            setIsConnected(false);
+        };
 
+        wsRef.current.onerror = (error) => {
+            console.error('WebSocket error:', error);
+            setIsConnected(false);
+        };
+
+        wsRef.current.onmessage = (event) => {
+            try {
+                const msg = JSON.parse(event.data);
+                if (msg['id'] != null) { // Assuming the Go backend sends messages with a type field
+                    setMessages(prevMessages => [...prevMessages, msg]);
+                }
+            } catch (error) {
+                console.error('Error parsing message:', error);
+            }
+        };
+
+        // Cleanup on unmount
+        return () => {
+            if (wsRef.current) {
+                wsRef.current.close();
+            }
+        };
+    }, []);
 
     useEffect(() => {
-
         if (typeof window !== 'undefined') {
             const gridInstance = GridStack.init({
                 float: true,
@@ -135,165 +107,53 @@ export default function Home() {
                 margin: 10,
                 cellHeight: 300,
                 minRow: 2
-            })
-            setGrid(gridInstance)
-/*
-            // Event Listener für Änderungen
-            gridInstance.on('change', () => {
-                const newItems = gridInstance.getGridItems().map(el => ({
-                    x: el.gridstackNode.x,
-                    y: el.gridstackNode.y,
-                    w: el.gridstackNode.w,
-                    h: el.gridstackNode.h,
-                    id: el.gridstackNode.id,
-                    content: el.gridstackNode.content
-                }))
-                setItems(newItems)
-            })
-*/
+            });
+            setGrid(gridInstance);
+
             return () => {
-                gridInstance.destroy()
-            }
+                gridInstance.destroy();
+            };
         }
-    }, [])
+    }, []);
 
-
-/*
-    const createLineChart = () => {
-        return (
-            <ResponsiveContainer id="toll" width="100%" height="100%">
-                <LineChart
-                    width={500}
-                    height={300}
-                    data={testdata}
-                    margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
-                    }}
-                >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-                    <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-                </LineChart>
-            </ResponsiveContainer>
-        );
-    };
-*/
-    /*
-    useEffect(() => {
-        if (grid) {
-            grid.removeAll()
-            items.forEach(item => {
-                const div = document.createElement('div')
-                div.className = 'grid-stack-item'
-                div.setAttribute('gs-x', item.x)
-                div.setAttribute('gs-y', item.y)
-                div.setAttribute('gs-w', item.w)
-                div.setAttribute('gs-h', item.h)
-                div.setAttribute('gs-id', item.id)
-
-                const content = document.createElement('div')
-                content.className = 'grid-stack-item-content'
-                /*
-                const respCon = document.createElement("ResponsiveContainer")
-
-                //respCon.setAttribute('width', "100")
-                //respCon.setAttribute('height', "100")
-                const lineChrt = document.createElement('LineChart')
-                lineChrt.setAttribute('width', 50)
-                lineChrt.setAttribute('height', 30)
-                lineChrt.setAttribute('data', testdata)
-                lineChrt.setAttribute('margin', {
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                })
-
-                const cGrid = document.createElement('CartesianGrid')
-                cGrid.setAttribute('strokeDasharray', "3 3")
-
-                const xAxis = document.createElement('XAxis')
-                xAxis.setAttribute('dataKey', "name")
-
-                const yAxis = document.createElement('YAxis')
-                const toolT = document.createElement('Tooltip')
-                const legen = document.createElement('Legend')
-                const line1 = document.createElement('Line')
-                line1.setAttribute('type', "monotone")
-                line1.setAttribute('dataKey', "pv")
-                line1.setAttribute('stroke', "#8884d8")
-                line1.setAttribute('activeDot', { r: 8 })
-
-                const line2 = document.createElement('Line')
-                line2.setAttribute('type', "monotone")
-                line2.setAttribute('dataKey', "uv")
-                line2.setAttribute('stroke', "#82ca9d")
-
-                lineChrt.appendChild(cGrid)
-                lineChrt.appendChild(xAxis)
-                lineChrt.appendChild(yAxis)
-                lineChrt.appendChild(toolT)
-                lineChrt.appendChild(legen)
-                lineChrt.appendChild(line1)
-                lineChrt.appendChild(line2)
-
-                respCon.appendChild(lineChrt)
-
-                content.appendChild(respCon)
-
-
-                // div.appendChild(createLineChart())
-                div.id = "wichtig";
-                div.innerHTML = createLineChart().innerHTML
-
-                //createLineChart()
-
-                // respCon.setAttribute('style', 'background-color: #00ff00')
-                // grid.makeWidget('#toll')
-                grid.addWidget(div)
-            })
-        }
-    }, [grid, items])
-
-*/
     const saveLayout = () => {
-        const layout = JSON.stringify(items)
-        localStorage.setItem('dashboard-layout', layout)
-        alert('Layout gespeichert!')
-    }
+        const layout = JSON.stringify(items);
+        localStorage.setItem('dashboard-layout', layout);
+        alert('Layout gespeichert!');
+    };
 
     const loadLayout = () => {
-        const layout = localStorage.getItem('dashboard-layout')
+        const layout = localStorage.getItem('dashboard-layout');
         if (layout) {
-            setItems(JSON.parse(layout))
+            setItems(JSON.parse(layout));
         }
-    }
+    };
 
     const clearAll = () => {
         if (grid) {
-            grid.removeAll()
-            setItems([])
+            grid.removeAll();
+            setItems([]);
         }
-    }
+    };
+
+    // Optional: Implement reconnection logic
+    const reconnect = () => {
+        if (wsRef.current?.readyState === WebSocket.CLOSED) {
+            wsRef.current = new WebSocket('ws://192.168.70.6:8080/ws');
+        }
+    };
 
     return (
         <div>
             <NavigationMenu className="!max-w-full !block">
                 <NavigationMenuList>
-                    <NavigationMenuItem className={cn( "flex-1", isActive('/') ? 'bg-accent text-accent-foreground' : 'bg-muted')}>
+                    <NavigationMenuItem className={cn("flex-1", isActive('/') ? 'bg-accent text-accent-foreground' : 'bg-muted')}>
                         <Link href="/">Home</Link>
                     </NavigationMenuItem>
-                    <NavigationMenuItem className={cn( "flex-1", isActive('/upload') ? 'bg-accent text-accent-foreground' : 'bg-muted')}>
+                    <NavigationMenuItem className={cn("flex-1", isActive('/upload') ? 'bg-accent text-accent-foreground' : 'bg-muted')}>
                         <Link href="/upload">Image Upload</Link>
                     </NavigationMenuItem>
-                    <NavigationMenuItem className={cn( "flex-1", isActive('/settings') ? 'bg-accent text-accent-foreground' : 'bg-muted')}>
+                    <NavigationMenuItem className={cn("flex-1", isActive('/settings') ? 'bg-accent text-accent-foreground' : 'bg-muted')}>
                         <Link href="/settings">Settings</Link>
                     </NavigationMenuItem>
                 </NavigationMenuList>
@@ -309,12 +169,12 @@ export default function Home() {
                     </NavigationMenuItem>
                     <NavigationMenuItem>
                         <Link href="/liveView" legacyBehavior passHref>
-                            <NavigationMenuLink  className={navigationMenuTriggerStyle()}>
+                            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                                 Live View
                             </NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
-                    <NavigationMenuItem  className={navigationMenuTriggerStyle()}>
+                    <NavigationMenuItem className={navigationMenuTriggerStyle()}>
                         <Link href="/settings" legacyBehavior passHref>
                             <NavigationMenuLink>
                                 Settings
@@ -325,7 +185,15 @@ export default function Home() {
             </NavigationMenu>
 
             <p>Status: {isConnected ? "connected" : "disconnected"}</p>
-            <p>Transport: {transport}</p>
+            {!isConnected && (
+                <button
+                    onClick={reconnect}
+                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                    Reconnect
+                </button>
+            )}
+
             <div>
                 <button
                     onClick={clearAll}
@@ -346,8 +214,10 @@ export default function Home() {
                     Layout laden
                 </button>
 
+                <DBCViewer></DBCViewer>
+
                 <div className="grid-stack">
-                    <div className="grid-stack-item">
+                    <div className="grid-stack-item" gs-w="8" gs-h="2">
                         <div className="grid-stack-item-content">
                             <table>
                                 <thead>
@@ -362,7 +232,7 @@ export default function Home() {
                                     return (
                                         <tr key={i}>
                                             <td>{message.id}</td>
-                                            <td>{new Date(message.ts_sec * 1000 + message.ts_usec / 1000).toISOString()}</td>
+                                            <td>{message.timestamp}</td>
                                             <td>{new Uint8Array(message.data).toString('16')}</td>
                                         </tr>
                                     );
@@ -371,15 +241,17 @@ export default function Home() {
                             </table>
                         </div>
                     </div>
-                    <div className="grid-stack-item">
+                    <div className="grid-stack-item" >
                         <div className="grid-stack-item-content">
-
-                            Zahl:
-                            {messages.at(-1) ? new Uint8Array(messages.at(-1).data).toString('16') : 42}
+                            {/*messages.findLast((message => message['id'] = 10)) ? messages.findLast((message => message['id'] = 10)).data : ""*/}
+                            <CANSignalDisplay
+                                canMessages={messages}
+                                dbcMessage={dbcData ? dbcData.messages[0] : null}
+                            />
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>
-            );
-            }
+        </div>
+    );
+}
