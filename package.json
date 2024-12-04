@@ -12,6 +12,7 @@
   "dependencies": {
     "@radix-ui/react-navigation-menu": "^1.2.1",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-tabs": "^1.1.1",
     "chart.js": "^4.4.6",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -27,7 +28,6 @@
     "recharts": "^2.13.3",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
-    "socketcan": "^4.0.5",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7"
   },
