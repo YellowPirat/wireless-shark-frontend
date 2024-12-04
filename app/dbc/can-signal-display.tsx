@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/atoms/ui/card';
 import { type Signal, type Message } from './dbc-parser';
 
 interface CANMessage {
@@ -13,7 +13,7 @@ interface Props {
     dbcMessage: Message;
 }
 
-const CANSignalDisplay: React.FC<Props> = ({ canMessages, dbcMessage }) => {
+const CanSignalDisplay: React.FC<Props> = ({ canMessages, dbcMessage }) => {
 
     if (!dbcMessage) {
         return (<div>leer</div>);
@@ -96,4 +96,4 @@ const CANSignalDisplay: React.FC<Props> = ({ canMessages, dbcMessage }) => {
     );
 };
 
-export default CANSignalDisplay;
+export default CanSignalDisplay;

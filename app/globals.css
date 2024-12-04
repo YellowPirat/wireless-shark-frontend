@@ -21,8 +21,9 @@
 
 
 .grid-stack-item-content {
-  background: black;
-  color: white;
+  background: white;
+  color: color;
+  /* border: 2px solid black;*/
 }
 
 

@@ -9,7 +9,7 @@ import React from 'react';
 import { cn } from "@/lib/utils";
 // import {DBCData, loadDBCFile} from "./dbc/dbc-parser.tsx";
 import {DBCParser, loadDBCFile} from './dbc/dbc-parser';
-import CANSignalDisplay from "./dbc/CAN-Signal-Display.tsx";
+import CanSignalDisplay from "./dbc/can-signal-display.tsx";
 import DBCViewer from "./dbc/page.tsx";
 // import {loadDBCFile, DBCData, Message, Signal} from './dbc-parser';
 
@@ -21,7 +21,15 @@ import {
     NavigationMenuList,
     NavigationMenuTrigger,
     navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+} from "@/components/atoms/ui/navigation-menu";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/atoms/ui/card"
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -217,8 +225,10 @@ export default function Home() {
                 <DBCViewer></DBCViewer>
 
                 <div className="grid-stack">
+
                     <div className="grid-stack-item" gs-w="8" gs-h="2">
                         <div className="grid-stack-item-content">
+                            <Card className="p-4">
                             <table>
                                 <thead>
                                 <tr>
@@ -239,15 +249,17 @@ export default function Home() {
                                 })}
                                 </tbody>
                             </table>
+                            </Card>
                         </div>
                     </div>
-                    <div className="grid-stack-item" >
-                        <div className="grid-stack-item-content">
-                            {/*messages.findLast((message => message['id'] = 10)) ? messages.findLast((message => message['id'] = 10)).data : ""*/}
-                            <CANSignalDisplay
-                                canMessages={messages}
-                                dbcMessage={dbcData ? dbcData.messages[0] : null}
-                            />
+                    <div className="grid-stack-item bg-white" gs-w="3" >
+                        <div className="grid-stack-item-content bg-white">
+                            <Card className="p-4">
+                                <CanSignalDisplay
+                                    canMessages={messages}
+                                    dbcMessage={dbcData ? dbcData.messages[0] : null}
+                                />
+                            </Card>
                         </div>
                     </div>
                 </div>

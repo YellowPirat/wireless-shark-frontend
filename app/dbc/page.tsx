@@ -9,27 +9,10 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Button } from "@/components/ui/button"
-
-import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from '@/components/ui/accordion';
-import { ScrollArea } from "@/components/ui/scroll-area"
-import {
-    HoverCard,
-    HoverCardContent,
-    HoverCardTrigger,
-} from "@/components/ui/hover-card"
-import Link from "next/link";
-import {
-    NavigationMenu,
-    NavigationMenuContent,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList,
-    NavigationMenuTrigger,
-    navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+} from "@/components/atoms/ui/card"
+import { Separator } from "@/components/atoms/ui/separator"
+import { Button } from "@/components/atoms/ui/button"
+import { ScrollArea } from "@/components/atoms/ui/scroll-area"
 
 export default function DBCViewer() {
     const [dbcData, setDbcData] = useState<DBCData | null>(null);
@@ -109,5 +92,3 @@ export default function DBCViewer() {
         </Card>
     );
 };
-
-// export default DBCViewer;
