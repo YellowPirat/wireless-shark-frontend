@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "@/components/atoms/ui/button";
-import { LineChart, BarChart, Settings } from 'lucide-react';
+import { LineChart, BarChart, Settings, FolderUp, FolderOpen } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 
 const Sidebar = () => {
@@ -10,7 +10,8 @@ const Sidebar = () => {
   const navItems = [
     { title: "Live View", icon: LineChart, href: "/live-view" },
     { title: "MCAP View", icon: BarChart, href: "/mcap-view" },
-    { title: "Settings", icon: Settings, href: "/settings" }
+    { title: "Settings", icon: Settings, href: "/settings" },
+    { title: "DCB Datei", icon: FolderOpen, href: "/dbc" }
   ];
 
   return (

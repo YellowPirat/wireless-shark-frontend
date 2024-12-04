@@ -21,7 +21,7 @@ export default function DBCViewer() {
     useEffect(() => {
         const fetchDBC = async () => {
             try {
-                const data = await loadDBCFile('/api/dbc/input.dbc'); // Pfad zur API-Route anpassen
+                const data = await loadDBCFile('/api/input.dbc'); // Pfad zur API-Route anpassen
                 setDbcData(data);
             } catch (err) {
                 setError('Fehler beim Laden der DBC-Datei Viewer');
