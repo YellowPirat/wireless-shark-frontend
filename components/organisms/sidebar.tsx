@@ -11,7 +11,6 @@ const Sidebar = () => {
     { title: "Live View", icon: LineChart, href: "/live-view" },
     { title: "MCAP View", icon: BarChart, href: "/mcap-view" },
     { title: "Settings", icon: Settings, href: "/settings" },
-    { title: "DCB Datei", icon: FolderOpen, href: "/dbc" }
   ];
 
   return (
