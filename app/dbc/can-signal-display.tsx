@@ -96,4 +96,4 @@ const CanSignalDisplay: React.FC<Props> = ({ canMessages, dbcMessage }) => {
     );
 };
 
-export default CanSignalDisplay;
+export {CanSignalDisplay} ;
