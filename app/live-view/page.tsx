@@ -30,7 +30,10 @@ export default function DBCPage() {
         const fetchDBC = async () => {
             try {
                 const data = await loadDBCFile('/api/dbc/input.dbc');
-                setDbcData(data);
+                if (data) {
+                    setDbcData(data);
+                }
+
             } catch (err) {
                 setError('Fehler beim Laden der DBC-Datei');
             }
@@ -70,14 +73,23 @@ export default function DBCPage() {
                 cellHeight: 300,
                 minRow: 2
             });
-            setGrid(gridInstance);
+            if (gridInstance) {
+                setGrid(gridInstance);
+            }
 
-            return () => gridInstance.destroy();
+            return () => {
+                if(gridInstance) {
+                    gridInstance.destroy();
+                }
+            };
         }
     }, []);
 
     const clearAll = () => {
-        grid?.removeAll();
+        if(grid) {
+            grid?.removeAll();
+            setGrid(null);
+        }
     };
 
     if (error) {
