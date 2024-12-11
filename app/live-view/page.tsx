@@ -152,9 +152,9 @@ export default function DBCPage() {
             )}
 
             <div className="grid-stack">
-                <div className="grid-stack-item" gs-w="8" gs-h="2">
+                <div className="grid-stack-item" gs-w="8" gs-h="1">
                     <div className="grid-stack-item-content">
-                        <Card className="p-4">
+                        <Card className="p-4 font-mono h-full">
                             <table>
                                 <thead>
                                     <tr>
@@ -166,9 +166,12 @@ export default function DBCPage() {
                                 <tbody>
                                     {messages.map((message, i) => (
                                         <tr key={i}>
-                                            <td>{message.id}</td>
+                                            <td>{message.id.toString(16).padStart(3, '0').toUpperCase()}</td>
                                             <td>{message.timestamp}</td>
-                                            <td>{new Uint8Array(message.data).toString('16')}</td>
+                                            <td>{Array.from(message.data.slice(0, message.length))
+                                                .map(byte => byte.toString(16).padStart(2, '0').toUpperCase())
+                                                .join(' ')}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -178,7 +181,7 @@ export default function DBCPage() {
                 </div>
                 <div className="grid-stack-item bg-white" gs-w="3">
                     <div className="grid-stack-item-content bg-white">
-                        <Card className="p-4">
+                        <Card className="p-4 h-full">
                             <CanSignalDisplay
                                 canMessages={messages}
                                 dbcMessage={dbcData ? dbcData.messages[0] : null}

@@ -80,7 +80,7 @@ const CanSignalDisplay: React.FC<Props> = ({ canMessages, dbcMessage }) => {
                         <CardContent className="p-4">
                             <div className="text-lg font-bold">{signal.name}</div>
                             <div className="text-2xl font-mono">
-                                {value.toFixed(2)} {signal.unit}
+                                {value.toFixed(0)} {signal.unit}
                             </div>
                             <div className="text-sm text-gray-500">
                                 Bereich: [{signal.minimum} bis {signal.maximum}] {signal.unit}
