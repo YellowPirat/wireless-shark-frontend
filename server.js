@@ -5,7 +5,7 @@ import { Server } from "socket.io";
 // import { can } from "socketcan";
 //import pkg from 'socketcan';
 //const { can } = pkg;
-//import * as can from "socketcan";
+import * as can from "socketcan";
 // import { DbcToKcdConverter } from './dbcToKcd';
 
 

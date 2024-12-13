@@ -1,0 +1,57 @@
+<NetworkDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://kayak.2codeornot2code.org/1.0" xsi:noNamespaceSchemaLocation="Definition.xsd">
+  <Document version="" />
+  <Node id="1" name="Steering" />
+  <Node id="2" name="Motor" />
+  <Bus name="Bus">
+    <Message id="0x00A" name="steering_angle" length="3">
+      <Producer>
+        <NodeRef id="1" />
+      </Producer>
+      <Signal name="enable" offset="0">
+        <Consumer>
+          <NodeRef id="1" />
+        </Consumer>
+      </Signal>
+      <Signal name="angle" offset="1" length="10">
+        <Consumer>
+          <NodeRef id="1" />
+        </Consumer>
+        <Value min="0" max="360" />
+      </Signal>
+    </Message>
+    <Message id="0x014" name="target_velocity_front" length="8">
+      <Producer>
+        <NodeRef id="2" />
+      </Producer>
+      <Signal name="right_front" offset="0" length="32">
+        <Consumer>
+          <NodeRef id="2" />
+        </Consumer>
+        <Value min="0" max="100000" />
+      </Signal>
+      <Signal name="left_front" offset="32" length="32">
+        <Consumer>
+          <NodeRef id="2" />
+        </Consumer>
+        <Value min="0" max="100000" />
+      </Signal>
+    </Message>
+    <Message id="0x01E" name="target_velocity_rear" length="8">
+      <Producer>
+        <NodeRef id="2" />
+      </Producer>
+      <Signal name="right_rear" offset="0" length="32">
+        <Consumer>
+          <NodeRef id="2" />
+        </Consumer>
+        <Value min="0" max="100000" />
+      </Signal>
+      <Signal name="left_rear" offset="32" length="32">
+        <Consumer>
+          <NodeRef id="2" />
+        </Consumer>
+        <Value min="0" max="100000" />
+      </Signal>
+    </Message>
+  </Bus>
+</NetworkDefinition>
