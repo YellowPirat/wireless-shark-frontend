@@ -7,11 +7,11 @@ import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
 import React from 'react';
 import { cn } from "@/lib/utils";
-// import {DBCData, loadDBCFile} from "./dbc/dbc-parser.tsx";
+// import {DBCData, loadDBCFile} from "./live-view/live-view-parser.tsx";
 import {DBCParser, loadDBCFile} from './dbc/dbc-parser';
 import CanSignalDisplay from "./dbc/can-signal-display.tsx";
 import DBCViewer from "./dbc/page.tsx";
-// import {loadDBCFile, DBCData, Message, Signal} from './dbc-parser';
+// import {loadDBCFile, DBCData, Message, Signal} from './live-view-parser';
 
 import {
     NavigationMenu,
