@@ -20,7 +20,7 @@ app.prepare().then(() => {
     const httpServer = createServer(handler);
 
     // const converter = new DbcToKcdConverter();
-    // converter.convertFile('input.dbc', 'output.kcd');
+    // converter.convertFile('input.live-view', 'output.kcd');
 /*
     const io = new Server(httpServer);
 
