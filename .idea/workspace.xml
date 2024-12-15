@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6c60fddd-d6d5-467a-b23f-e3e147efe9fb" name="Changes" comment="Added shadcn/ui">
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Mario Wegmann" />
+      </list>
+    </option>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="dev" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2oQSUe2lOqPrMcuEXsEg3VHmd4f" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev__mario&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/var/www&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/debian/wireless-shark/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RdControllerToolWindowsLayoutState" isNewUi="true">
+    <layout>
+      <window_info id="Bookmarks" side_tool="true" />
+      <window_info id="Merge Requests" />
+      <window_info id="npm" side_tool="true" />
+      <window_info id="Commit_Guest" show_stripe_button="false" />
+      <window_info id="Pull Requests" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6710297" visible="true" weight="0.16432291" />
+      <window_info id="Commit" order="1" sideWeight="0.6815009" weight="0.16432291" />
+      <window_info id="VcsChanges" order="2" weight="0.3052662" />
+      <window_info active="true" id="Structure" order="3" sideWeight="0.3289703" side_tool="true" visible="true" weight="0.16432291" />
+      <window_info anchor="bottom" id="Database Changes" />
+      <window_info anchor="bottom" id="TypeScript" />
+      <window_info anchor="bottom" id="TODO" />
+      <window_info anchor="bottom" id="File Transfer" />
+      <window_info anchor="bottom" id="Version Control" order="0" weight="0.3375506" />
+      <window_info anchor="bottom" id="Problems" order="1" />
+      <window_info anchor="bottom" id="Problems View" order="2" weight="0.33046558" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.33350623" />
+      <window_info anchor="bottom" id="Services" order="4" weight="0.33046558" />
+      <window_info anchor="bottom" id="Find" order="5" weight="0.33046558" />
+      <window_info anchor="right" id="Endpoints" />
+      <window_info anchor="right" id="documentation.v2" show_stripe_button="false" side_tool="true" />
+      <window_info anchor="right" id="Coverage" side_tool="true" />
+      <window_info anchor="right" content_ui="combo" id="Notifications" order="0" weight="0.25" />
+      <window_info anchor="right" id="AIAssistant" order="1" weight="0.33015046" />
+      <window_info anchor="right" id="Database" order="2" weight="0.25" />
+      <window_info anchor="right" id="Gradle" order="3" weight="0.25" />
+      <window_info anchor="right" id="Maven" order="4" weight="0.25" />
+    </layout>
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/components/atoms/ui" />
+      <recent name="$PROJECT_DIR$/app/api" />
+      <recent name="$PROJECT_DIR$/app/dbc" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-WS-243.21565.180" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6c60fddd-d6d5-467a-b23f-e3e147efe9fb" name="Changes" comment="" />
+      <created>1730800324589</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1730800324589</updated>
+      <workItem from="1730800327021" duration="4810000" />
+      <workItem from="1731424647996" duration="16077000" />
+      <workItem from="1731489642053" duration="3736000" />
+      <workItem from="1731495986193" duration="2611000" />
+      <workItem from="1732022236479" duration="12723000" />
+      <workItem from="1732634209410" duration="1682000" />
+      <workItem from="1733231585273" duration="41000" />
+      <workItem from="1733231744175" duration="556000" />
+      <workItem from="1733232653821" duration="6000" />
+      <workItem from="1733232987689" duration="4000" />
+      <workItem from="1733233000681" duration="51000" />
+      <workItem from="1733233365437" duration="3874000" />
+      <workItem from="1733240859199" duration="28333000" />
+      <workItem from="1733912676287" duration="3208000" />
+      <workItem from="1734096336177" duration="2021000" />
+      <workItem from="1734286494070" duration="3499000" />
+    </task>
+    <task id="LOCAL-00001" summary="Experiments with Grids">
+      <option name="closed" value="true" />
+      <created>1731454482631</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1731454482631</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Working with Table, at least">
+      <option name="closed" value="true" />
+      <created>1731491805579</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1731491805579</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Current State">
+      <option name="closed" value="true" />
+      <created>1733251288517</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1733251288517</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Tests with .dbc Frontend parsing.">
+      <option name="closed" value="true" />
+      <created>1733272081775</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1733272081775</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Merged work.">
+      <option name="closed" value="true" />
+      <created>1733273143358</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1733273143358</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Hex View">
+      <option name="closed" value="true" />
+      <created>1733914368214</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1733914368214</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Folder rename">
+      <option name="closed" value="true" />
+      <created>1734097062046</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1734097062046</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Type Errors, No more CAN in Frontend.">
+      <option name="closed" value="true" />
+      <created>1734289244720</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1734289244720</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Type Errors, No more CAN in Frontend.">
+      <option name="closed" value="true" />
+      <created>1734289839785</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1734289839785</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Init clean Next.js Project with Next.js 14.">
+      <option name="closed" value="true" />
+      <created>1734289885392</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1734289885393</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Added shadcn/ui">
+      <option name="closed" value="true" />
+      <created>1734289950031</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1734289950031</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Added shadcn/ui">
+      <option name="closed" value="true" />
+      <created>1734289959823</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1734289959823</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Experiments with Grids" />
+    <MESSAGE value="Working with Table, at least" />
+    <MESSAGE value="Current State" />
+    <MESSAGE value="Tests with .dbc Frontend parsing." />
+    <MESSAGE value="Merged work." />
+    <MESSAGE value="Hex View" />
+    <MESSAGE value="Folder rename" />
+    <MESSAGE value="Type Errors, No more CAN in Frontend." />
+    <MESSAGE value="Init clean Next.js Project with Next.js 14." />
+    <MESSAGE value="Added shadcn/ui" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added shadcn/ui" />
+  </component>
+</project>
