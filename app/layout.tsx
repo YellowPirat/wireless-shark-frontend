@@ -4,6 +4,11 @@ import React from 'react';
 import Sidebar from '@/components/organisms/sidebar';
 import "./globals.css";
 
+interface Props {
+    children?: ReactNode
+    // any props that come into the component
+}
+
 const RootLayout = ({ children }) => {
   return (
     <html lang="en">

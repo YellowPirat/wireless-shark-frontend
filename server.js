@@ -5,7 +5,7 @@ import { Server } from "socket.io";
 // import { can } from "socketcan";
 //import pkg from 'socketcan';
 //const { can } = pkg;
-import * as can from "socketcan";
+// import * as can from "socketcan";
 // import { DbcToKcdConverter } from './dbcToKcd';
 
 
@@ -28,9 +28,9 @@ app.prepare().then(() => {
         // socket.emit("hello", {"id": "Test", "data":"Wichtige Daten"});
     });
 */
-    var channel = can.createRawChannel("vcan0", true);
+//     var channel = can.createRawChannel("vcan0", true);
     //channel.addListener("onMessage", function(msg) { // io.emit("can-message", msg); } );
-    channel.start();
+//     channel.start();
 
     httpServer
         .once("error", (err) => {

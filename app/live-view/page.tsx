@@ -65,8 +65,8 @@ export default function DBCPage() {
     }, []);
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const gridInstance = GridStack.init({
+        if (typeof window !== 'undefined' ) {
+            try {const gridInstance = GridStack.init({
                 float: true,
                 removable: true,
                 removeTimeout: 100,
@@ -74,15 +74,19 @@ export default function DBCPage() {
                 cellHeight: 300,
                 minRow: 2
             });
-            if (gridInstance) {
-                setGrid(gridInstance);
-            }
 
-            return () => {
-                if(gridInstance) {
-                    gridInstance.destroy();
+                if (gridInstance) {
+                    setGrid(gridInstance);
                 }
-            };
+
+                return () => {
+                    if(gridInstance) {
+                        gridInstance.destroy();
+                    }
+                };
+            } catch (error) {
+                return () => {};
+            }
         }
     }, []);
 
