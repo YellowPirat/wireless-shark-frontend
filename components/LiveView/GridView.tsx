@@ -2,16 +2,24 @@
 
 import React, {useEffect, useRef, useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {GridStack as GridStackType, GridStackWidget} from 'gridstack';
+import {GridItemHTMLElement, GridStack as GridStackType, GridStackWidget} from 'gridstack';
+import 'gridstack/dist/gridstack.min.css';
 import TableWidget from "@/components/widgets/TableWidget";
-import {Card, CardHeader, CardTitle, CardContent} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { X } from 'lucide-react';
+
+interface CanMessage {
+    id: number; // Die ID wird als Hex-String dargestellt
+    timestamp: string | Date; // Zeitstempel der Nachricht
+    data: Uint8Array | number[]; // Rohdaten als Uint8Array oder ähnliches typisiertes Array
+    length: number; // Länge der Nachricht
+}
 
 export default function GridStackComponent() {
     const [count, setCount] = useState(0);
     const [info, setInfo] = useState('');
     const gridRef = useRef<GridStackType | null>(null);
-    const [canMessages, setCanMessages] = useState([]);
+    const [canMessages, setCanMessages] = useState<CanMessage[]>([]);
     const widgetRoots = useRef<Map<number, ReturnType<typeof createRoot>>>(new Map());
     const [widgets, setWidgets] = useState<number[]>([]);
 
@@ -83,7 +91,7 @@ export default function GridStackComponent() {
     }, [canMessages]);
 
     const removeWidget = (widgetId: number) => {
-        const widgetElement = document.querySelector(`[data-widget-id="${widgetId}"]`);
+        const widgetElement = document.querySelector(`[data-widget-id="${widgetId}"]`) as GridItemHTMLElement;
         if (widgetElement && gridRef.current) {
             gridRef.current.removeWidget(widgetElement);
             const root = widgetRoots.current.get(widgetId);
@@ -98,7 +106,7 @@ export default function GridStackComponent() {
     const addNewWidget = () => {
         if (!gridRef.current) return;
 
-        setCanMessages(prev => [...prev, "Hallo"]);
+        setCanMessages(prev => [...prev, {id: 42, timestamp: new Date(), data: [42,42,42,42], length: 4}]);
 
         const widgetId = count;
         const widgetElement = document.createElement('div');
