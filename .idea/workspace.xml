@@ -4,17 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6c60fddd-d6d5-467a-b23f-e3e147efe9fb" name="Changes" comment="New Root Layout">
-      <change afterPath="$PROJECT_DIR$/components/LiveView/DBCControl.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/LiveView/GridControl.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/LiveView/GridView.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/LiveView/Sidebar.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/LiveView/index.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/Navbar.tsx" afterDir="false" />
+    <list default="true" id="6c60fddd-d6d5-467a-b23f-e3e147efe9fb" name="Changes" comment="First Working Prototype">
+      <change afterPath="$PROJECT_DIR$/components/widgets/TableWidget.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components.json" beforeDir="false" afterPath="$PROJECT_DIR$/components.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/LiveView/DBCControl.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/LiveView/DBCControl.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/LiveView/GridControl.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/LiveView/GridControl.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/LiveView/GridView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/LiveView/GridView.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/LiveView/Sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/LiveView/Sidebar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ui/card.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ui/card.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,10 +68,10 @@
       <window_info id="npm" side_tool="true" />
       <window_info id="Commit_Guest" show_stripe_button="false" />
       <window_info id="Pull Requests" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.67019546" visible="true" weight="0.16432291" />
-      <window_info id="Commit" order="1" sideWeight="0.6815009" weight="0.16432291" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6692709" visible="true" weight="0.16432291" />
+      <window_info id="Commit" order="1" sideWeight="0.6815961" weight="0.16432291" />
       <window_info id="VcsChanges" order="2" weight="0.3052662" />
-      <window_info active="true" id="Structure" order="3" sideWeight="0.32980454" side_tool="true" visible="true" weight="0.16432291" />
+      <window_info active="true" id="Structure" order="3" sideWeight="0.33072916" side_tool="true" visible="true" weight="0.16432291" />
       <window_info anchor="bottom" id="Database Changes" />
       <window_info anchor="bottom" id="TypeScript" />
       <window_info anchor="bottom" id="TODO" />
@@ -81,9 +79,9 @@
       <window_info anchor="bottom" id="Version Control" order="0" weight="0.3375506" />
       <window_info anchor="bottom" id="Problems" order="1" />
       <window_info anchor="bottom" id="Problems View" order="2" weight="0.33046558" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.2909751" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.3303942" />
       <window_info anchor="bottom" id="Services" order="4" weight="0.33046558" />
-      <window_info anchor="bottom" id="Find" order="5" weight="0.33046558" />
+      <window_info anchor="bottom" id="Find" order="5" weight="0.3303942" />
       <window_info anchor="right" id="Endpoints" />
       <window_info anchor="right" id="documentation.v2" show_stripe_button="false" side_tool="true" />
       <window_info anchor="right" id="Coverage" side_tool="true" />
@@ -132,7 +130,7 @@
       <workItem from="1733240859199" duration="28333000" />
       <workItem from="1733912676287" duration="3208000" />
       <workItem from="1734096336177" duration="2021000" />
-      <workItem from="1734286494070" duration="8789000" />
+      <workItem from="1734286494070" duration="19564000" />
     </task>
     <task id="LOCAL-00001" summary="Experiments with Grids">
       <option name="closed" value="true" />
@@ -254,7 +252,15 @@
       <option name="project" value="LOCAL" />
       <updated>1734290171624</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="First Working Prototype">
+      <option name="closed" value="true" />
+      <created>1734295859471</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1734295859471</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -285,6 +291,7 @@
     <MESSAGE value="Added gridstack" />
     <MESSAGE value="Shadcn/ui Menubar and Card added" />
     <MESSAGE value="New Root Layout" />
-    <option name="LAST_COMMIT_MESSAGE" value="New Root Layout" />
+    <MESSAGE value="First Working Prototype" />
+    <option name="LAST_COMMIT_MESSAGE" value="First Working Prototype" />
   </component>
 </project>
