@@ -1,11 +1,9 @@
 'use client';
 
-import React, {createElement, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {GridStack as GridStackType, GridStackWidget} from 'gridstack';
-import 'gridstack/dist/gridstack.min.css';
 import TableWidget from "@/components/widgets/TableWidget";
-import {getDocumentElement} from "@floating-ui/utils/dom";
 import {Card, CardHeader, CardTitle, CardContent} from "@/components/ui/card";
 import { X } from 'lucide-react';
 
@@ -13,6 +11,9 @@ export default function GridStackComponent() {
     const [count, setCount] = useState(0);
     const [info, setInfo] = useState('');
     const gridRef = useRef<GridStackType | null>(null);
+    const [canMessages, setCanMessages] = useState([]);
+    const widgetRoots = useRef<Map<number, ReturnType<typeof createRoot>>>(new Map());
+    const [widgets, setWidgets] = useState<number[]>([]);
 
     const initialItems: GridStackWidget[] = [
         {x: 2, y: 1, h: 2, content: "hi"},
@@ -26,7 +27,6 @@ export default function GridStackComponent() {
         // Dynamically import GridStack on the client side
         const initializeGridStack = async () => {
             const {GridStack} = await import('gridstack');
-            await import('gridstack/dist/gridstack.min.css');
 
             gridRef.current = GridStack.init({
                 float: true,
@@ -52,50 +52,86 @@ export default function GridStackComponent() {
         return () => {
             if (gridRef.current) {
                 gridRef.current.destroy();
+                // Cleanup all roots
+                widgetRoots.current.forEach(root => root.unmount());
             }
         };
     }, []);
 
+    useEffect(() => {
+        widgets.forEach(widgetId => {
+            const root = widgetRoots.current.get(widgetId);
+            if (root) {
+                root.render(
+                    <Card className="w-full h-full border-r">
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <div>ID</div>
+                            <div>Table</div>
+                            <button
+                                onClick={() => removeWidget(widgetId)}
+                                className="w-5 text-gray-800 z-20"
+                                aria-label="Delete widget"
+                            >
+                                <X size={16} />
+                            </button>
+                        </div>
+                        <TableWidget messages={canMessages} />
+                    </Card>
+                );
+            }
+        });
+    }, [canMessages]);
+
+    const removeWidget = (widgetId: number) => {
+        const widgetElement = document.querySelector(`[data-widget-id="${widgetId}"]`);
+        if (widgetElement && gridRef.current) {
+            gridRef.current.removeWidget(widgetElement);
+            const root = widgetRoots.current.get(widgetId);
+            if (root) {
+                root.unmount();
+                widgetRoots.current.delete(widgetId);
+            }
+            setWidgets(prev => prev.filter(id => id !== widgetId));
+        }
+    };
+
     const addNewWidget = () => {
         if (!gridRef.current) return;
 
-        // Erstelle das Widget-Element
+        setCanMessages(prev => [...prev, "Hallo"]);
+
+        const widgetId = count;
         const widgetElement = document.createElement('div');
         widgetElement.className = 'grid-stack-item';
+        widgetElement.setAttribute('data-widget-id', widgetId.toString());
 
-        // Erstelle das Content-Element
         const contentElement = document.createElement('div');
         contentElement.className = 'grid-stack-item-content';
         widgetElement.appendChild(contentElement);
 
-        // Erstelle React Root und render die Komponente
         const root = createRoot(contentElement);
+        widgetRoots.current.set(widgetId, root);
+
         root.render(
-            <Card className="w-full h-full border-r ">
-                    <div style={{display: "flex", justifyContent: "space-between"}}>
-                        <div>ID</div>
-                        <div>Table</div>
-                        <button
-                        onClick={() => {
-                            // Remove widget from grid
-                            gridRef.current?.removeWidget(widgetElement);
-                            // Unmount React component
-                            root.unmount();
-                        }}
+            <Card className="w-full h-full border-r">
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <div>ID</div>
+                    <div>Table</div>
+                    <button
+                        onClick={() => removeWidget(widgetId)}
                         className="w-5 text-gray-800 z-20"
                         aria-label="Delete widget"
-                    ><X size={16} /></button>
-                    </div>
-                <CardContent>
-                    <TableWidget/>
-                </CardContent>
+                    >
+                        <X size={16} />
+                    </button>
+                </div>
+                <TableWidget messages={canMessages} />
             </Card>
         );
 
-        // Füge das Widget zum Grid hinzu
         gridRef.current.makeWidget(widgetElement);
-
-        setCount(prevCount => prevCount + 1);
+        setWidgets(prev => [...prev, widgetId]);
+        setCount(prev => prev + 1);
     };
 
     return (
