@@ -10,7 +10,7 @@ import {
 
 interface CanMessage {
     id: number;
-    timestamp: string | Date;
+    timestamp: Date;
     data: Uint8Array | number[];
     length: number;
 }
@@ -29,7 +29,7 @@ export default function TableWidget({ messages }: { messages: CanMessage[] }) {
                 {messages.map((message, i) => (
                     <TableRow key={i}>
                         <TableCell className="font-medium">{message.id.toString(16).padStart(3, '0').toUpperCase()}</TableCell>
-                        <TableCell>{message.timestamp.toString()}</TableCell>
+                        <TableCell>{message.timestamp}</TableCell>
                         <TableCell>
                             {Array.from(message.data.slice(0, message.length))
                                 .map(byte => byte.toString(16).padStart(2, '0').toUpperCase())

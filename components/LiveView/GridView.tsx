@@ -8,6 +8,11 @@ import TableWidget from "@/components/widgets/TableWidget";
 import { Card } from "@/components/ui/card";
 import { X } from 'lucide-react';
 
+interface GridViewProps {
+    isWSConnected: boolean;
+    setIsWSConnected: (value: boolean) => void;
+}
+
 interface CanMessage {
     id: number; // Die ID wird als Hex-String dargestellt
     timestamp: string | Date; // Zeitstempel der Nachricht
@@ -15,21 +20,38 @@ interface CanMessage {
     length: number; // Länge der Nachricht
 }
 
-export default function GridStackComponent() {
+export default function GridStackComponent({ isWSConnected, setIsWSConnected }: GridViewProps) {
+    const wsRef = useRef<WebSocket | null>(null);
+    const gridRef = useRef<GridStackType | null>(null);
+    const widgetRoots = useRef<Map<number, ReturnType<typeof createRoot>>>(new Map());
+
     const [count, setCount] = useState(0);
     const [info, setInfo] = useState('');
-    const gridRef = useRef<GridStackType | null>(null);
     const [canMessages, setCanMessages] = useState<CanMessage[]>([]);
-    const widgetRoots = useRef<Map<number, ReturnType<typeof createRoot>>>(new Map());
     const [widgets, setWidgets] = useState<number[]>([]);
 
-    const initialItems: GridStackWidget[] = [
-        {x: 2, y: 1, h: 2, content: "hi"},
-        {x: 2, y: 4, w: 3, content: "hi"},
-        {x: 4, y: 2, content: "hi"},
-        {x: 3, y: 1, h: 2, content: "hi"},
-        {x: 0, y: 6, w: 2, h: 2, content: "hi"},
-    ];
+
+    useEffect(() => {
+        wsRef.current = new WebSocket('ws://' + window.location.host + ':8080/ws');
+        wsRef.current.onopen = () => setIsWSConnected(true);
+        wsRef.current.onclose = () => setIsWSConnected(false);
+        wsRef.current.onerror = () => setIsWSConnected(false);
+
+        wsRef.current.onmessage = (event) => {
+            try {
+                const msg = JSON.parse(event.data);
+                if (msg['id'] != null) {
+                    setCanMessages((prev) => [...prev, msg]);
+                }
+            } catch (error) {
+                console.error('Error parsing message:', error);
+            }
+        };
+
+        return () => {
+            wsRef.current?.close();
+        };
+    }, []);
 
     useEffect(() => {
         // Dynamically import GridStack on the client side
@@ -106,12 +128,14 @@ export default function GridStackComponent() {
     const addNewWidget = () => {
         if (!gridRef.current) return;
 
-        setCanMessages(prev => [...prev, {id: 42, timestamp: new Date(), data: [42,42,42,42], length: 4}]);
+        // setCanMessages(prev => [...prev, {id: 42, timestamp: new Date(), data: [42,42,42,42], length: 4}]);
 
         const widgetId = count;
         const widgetElement = document.createElement('div');
         widgetElement.className = 'grid-stack-item';
         widgetElement.setAttribute('data-widget-id', widgetId.toString());
+        widgetElement.setAttribute('gs-w', '6');
+        widgetElement.setAttribute('gs-h', '4');
 
         const contentElement = document.createElement('div');
         contentElement.className = 'grid-stack-item-content';

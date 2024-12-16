@@ -12,7 +12,7 @@ import Link from 'next/link'
 export default function Navbar() {
     return (
         <NavigationMenu className="px-4 py-2">
-            <Link href="/" legacyBehavior passHref className="px-4 py-2 hover:bg-gray-100 rounded">
+            <Link href="/live-view" legacyBehavior passHref className="px-4 py-2 hover:bg-gray-100 rounded">
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     <LineChart className="w-4 h-4 mr-2" />
                     Live View

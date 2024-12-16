@@ -1,5 +1,5 @@
-import LiveView from '@/components/LiveView'
+import {redirect} from 'next/navigation';
 
-export default function Home() {
-  return <LiveView />
+export default async function Home({params}) {
+    redirect('/live-view');
 }
