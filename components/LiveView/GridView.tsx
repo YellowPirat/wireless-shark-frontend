@@ -2,7 +2,7 @@
 
 import React, {useEffect, useRef, useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {GridItemHTMLElement, GridStack as GridStackType, GridStackWidget} from 'gridstack';
+import {GridItemHTMLElement, GridStack as GridStackType } from 'gridstack';
 import 'gridstack/dist/gridstack.min.css';
 import TableWidget from "@/components/widgets/TableWidget";
 import { Card } from "@/components/ui/card";
@@ -12,6 +12,7 @@ interface GridViewProps {
     isWSConnected: boolean;
     setIsWSConnected: (value: boolean) => void;
 }
+
 
 interface CanMessage {
     id: number; // Die ID wird als Hex-String dargestellt
@@ -26,7 +27,7 @@ export default function GridStackComponent({ isWSConnected, setIsWSConnected }: 
     const widgetRoots = useRef<Map<number, ReturnType<typeof createRoot>>>(new Map());
 
     const [count, setCount] = useState(0);
-    const [info, setInfo] = useState('');
+    // const [info, setInfo] = useState('');
     const [canMessages, setCanMessages] = useState<CanMessage[]>([]);
     const [widgets, setWidgets] = useState<number[]>([]);
 
@@ -48,6 +49,8 @@ export default function GridStackComponent({ isWSConnected, setIsWSConnected }: 
             }
         };
 
+        console.log(isWSConnected);
+
         return () => {
             wsRef.current?.close();
         };
@@ -65,7 +68,9 @@ export default function GridStackComponent({ isWSConnected, setIsWSConnected }: 
                 removable: false,
             });//.load(initialItems);
 
-            gridRef.current.on('dragstop', (_event: Event, element: any) => {
+            /*
+            gridRef.current.on('dragstop', (_event: Event, element: Any) => {
+
                 const node = element.gridstackNode;
                 setInfo(`you just dragged node #${node.id} to ${node.x},${node.y} – good job!`);
 
@@ -74,6 +79,8 @@ export default function GridStackComponent({ isWSConnected, setIsWSConnected }: 
                     setInfo('');
                 }, 2000);
             });
+
+             */
         };
 
         initializeGridStack();
@@ -175,7 +182,7 @@ export default function GridStackComponent({ isWSConnected, setIsWSConnected }: 
             >
                 Add Widget
             </button>
-            {info && <p className="mb-4 text-green-600">{info}</p>}
+            {/*info && <p className="mb-4 text-green-600">{info}</p>*/}
             <div className="grid-stack"></div>
         </div>
     );

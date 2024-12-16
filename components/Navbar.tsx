@@ -5,7 +5,7 @@ import {
     NavigationMenuLink,
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-import { LineChart, BarChart, Settings, FolderUp, FolderOpen } from 'lucide-react';
+import { LineChart, BarChart, Settings } from 'lucide-react';
 
 import Link from 'next/link'
 

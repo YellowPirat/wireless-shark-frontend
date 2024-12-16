@@ -1,7 +1,6 @@
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -9,13 +8,17 @@ import {
 } from "@/components/ui/table"
 
 interface CanMessage {
-    id: number;
-    timestamp: Date;
-    data: Uint8Array | number[];
-    length: number;
+    id: number; // Die ID wird als Hex-String dargestellt
+    timestamp: string | Date; // Zeitstempel der Nachricht
+    data: Uint8Array | number[]; // Rohdaten als Uint8Array oder ähnliches typisiertes Array
+    length: number; // Länge der Nachricht
 }
 
-export default function TableWidget({ messages }: { messages: CanMessage[] }) {
+interface TableWidgetProps {
+    messages: CanMessage[];
+}
+
+export default function TableWidget({ messages }: TableWidgetProps) {
     return (
         <Table>
             <TableHeader>
@@ -29,7 +32,7 @@ export default function TableWidget({ messages }: { messages: CanMessage[] }) {
                 {messages.map((message, i) => (
                     <TableRow key={i}>
                         <TableCell className="font-medium">{message.id.toString(16).padStart(3, '0').toUpperCase()}</TableCell>
-                        <TableCell>{message.timestamp}</TableCell>
+                        <TableCell>{message.timestamp.toString()}</TableCell>
                         <TableCell>
                             {Array.from(message.data.slice(0, message.length))
                                 .map(byte => byte.toString(16).padStart(2, '0').toUpperCase())

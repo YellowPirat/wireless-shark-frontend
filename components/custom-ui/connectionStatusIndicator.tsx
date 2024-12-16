@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+// import React, { useState, useEffect } from 'react';
 
 interface IndicatorProps {
     isConnected: boolean;
 }
 export default function ConnectionStatusIndicator({isConnected}: IndicatorProps) {
-    const [isPinging, setIsPinging] = useState(false);
+    // const [isPinging, setIsPinging] = useState(false);
 /*
     useEffect(() => {
         // Initial online status

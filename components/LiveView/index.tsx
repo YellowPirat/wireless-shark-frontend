@@ -21,6 +21,7 @@ export default function LiveView() {
                 }
 
             } catch (err) {
+                console.log(err);
                 // setError('Fehler beim Laden der DBC-Datei');
             }
         };
