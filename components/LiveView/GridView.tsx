@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {GridItemHTMLElement, GridStack as GridStackType} from 'gridstack';
 import 'gridstack/dist/gridstack.min.css';

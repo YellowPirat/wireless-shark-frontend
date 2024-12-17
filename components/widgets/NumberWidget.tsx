@@ -1,8 +1,8 @@
 import { InterpretedSignal } from "@/components/CANParser/CANParser";
 
 interface NumberWidgetProps {
-    signal: InterpretedSignal;
-    timestamp: string | Date;
+    signal: InterpretedSignal | undefined;
+    timestamp: string | Date | undefined;
 }
 
 export default function NumberWidget({signal, timestamp}: NumberWidgetProps) {
