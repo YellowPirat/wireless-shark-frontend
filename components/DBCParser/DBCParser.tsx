@@ -97,6 +97,7 @@ class DBCParser {
             this.data.messages[this.data.messages.length - 1].signals.push(signal);
         }
     }
+
 }
 
 // Hilfs-Funktion zum Laden der DBC-Datei
