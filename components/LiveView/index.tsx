@@ -11,6 +11,9 @@ import { loadDBCFile, DBCData } from '@/components/DBCParser/DBCParser';
 export default function LiveView() {
     const [dbcData, setDbcData] = useState<DBCData | null>(null);
     const [isWSConnected, setIsWSConnected] = useState(false);
+    const [shouldWSReconnect, setShouldWSReconnect] = useState(false);
+    const [shouldClearMessages, setShouldClearMessages] = useState(false);
+    const [wantLiveUpdate, setWantLiveUpdate] = useState(true);
 
     useEffect(() => {
         const fetchDBC = async () => {
@@ -30,8 +33,22 @@ export default function LiveView() {
 
     return (
         <div className="flex h-[calc(100vh-64px)]">
-            <Sidebar isWSConnected={isWSConnected} dbcData={dbcData}/>
-            <GridView isWSConnected={isWSConnected} setIsWSConnected={setIsWSConnected} dbcData={dbcData}/>
+            <Sidebar isWSConnected={isWSConnected}
+                     setShouldWSReconnect={setShouldWSReconnect}
+                     wantLiveUpdate={wantLiveUpdate}
+                     setWantLiveUpdate={setWantLiveUpdate}
+                     setShouldClearMessages={setShouldClearMessages}
+                     dbcData={dbcData}
+            />
+            <GridView isWSConnected={isWSConnected}
+                      setIsWSConnected={setIsWSConnected}
+                      shouldWSReconnect={shouldWSReconnect}
+                      setShouldWSReconnect={setShouldWSReconnect}
+                      wantLiveUpdate={wantLiveUpdate}
+                      dbcData={dbcData}
+                      shouldClearMessages={shouldClearMessages}
+                      setShouldClearMessages={setShouldClearMessages}
+            />
         </div>
     )
 }

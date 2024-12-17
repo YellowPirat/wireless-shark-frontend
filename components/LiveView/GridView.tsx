@@ -2,10 +2,10 @@
 
 import React, {useEffect, useRef, useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {GridItemHTMLElement, GridStack as GridStackType } from 'gridstack';
+import {GridItemHTMLElement, GridStack as GridStackType} from 'gridstack';
 import 'gridstack/dist/gridstack.min.css';
 import TableWidget from "@/components/widgets/TableWidget";
-import { Card } from "@/components/ui/card";
+import {Card} from "@/components/ui/card";
 
 import {DBCData} from "@/components/DBCParser/DBCParser";
 import DeleteButton from "@/components/custom-ui/DeleteButton"
@@ -13,9 +13,13 @@ import DeleteButton from "@/components/custom-ui/DeleteButton"
 interface GridViewProps {
     isWSConnected: boolean;
     setIsWSConnected: (value: boolean) => void;
+    shouldWSReconnect: boolean;
+    setShouldWSReconnect: (value: boolean) => void;
+    wantLiveUpdate: boolean;
+    shouldClearMessages: boolean;
+    setShouldClearMessages: (value: boolean) => void;
     dbcData: DBCData | null;
 }
-
 
 interface CanMessage {
     id: number; // Die ID wird als Hex-String dargestellt
@@ -24,7 +28,16 @@ interface CanMessage {
     length: number; // Länge der Nachricht
 }
 
-export default function GridStackComponent({ isWSConnected, setIsWSConnected, dbcData }: GridViewProps) {
+export default function GridStackComponent({
+                                               isWSConnected,
+                                               setIsWSConnected,
+                                               shouldWSReconnect,
+                                               setShouldWSReconnect,
+                                               wantLiveUpdate,
+                                               shouldClearMessages,
+                                               setShouldClearMessages,
+                                               dbcData
+                                           }: GridViewProps) {
     const wsRef = useRef<WebSocket | null>(null);
     const gridRef = useRef<GridStackType | null>(null);
     const widgetRoots = useRef<Map<number, ReturnType<typeof createRoot>>>(new Map());
@@ -39,24 +52,49 @@ export default function GridStackComponent({ isWSConnected, setIsWSConnected, db
         wsRef.current.onopen = () => setIsWSConnected(true);
         wsRef.current.onclose = () => setIsWSConnected(false);
         wsRef.current.onerror = () => setIsWSConnected(false);
-
-        wsRef.current.onmessage = (event) => {
-            try {
-                const msg = JSON.parse(event.data);
-                if (msg['id'] != null) {
-                    setCanMessages((prev) => [...prev, msg]);
-                }
-            } catch (error) {
-                console.error('Error parsing message:', error);
-            }
-        };
-
         console.log(isWSConnected);
 
         return () => {
             wsRef.current?.close();
         };
     }, []);
+
+    useEffect(() => {
+        if (!wsRef.current) return;
+        wsRef.current.onmessage = (event) => {
+            try {
+                const msg = JSON.parse(event.data);
+                if (msg['id'] != null) {
+                    if (wantLiveUpdate) {
+                        setCanMessages((prev) => [...prev, msg]);
+                    }
+                }
+            } catch (error) {
+                console.error('Error parsing message:', error);
+            }
+        };
+    }, [wantLiveUpdate, shouldWSReconnect]); // Abhängigkeit hinzufügen
+
+    useEffect(() => {
+        if (shouldWSReconnect) {
+            if (wsRef.current) {
+                wsRef.current.close();
+            }
+            wsRef.current = new WebSocket('ws://' + window.location.host + ':8080/ws');
+            wsRef.current.onopen = () => setIsWSConnected(true);
+            wsRef.current.onclose = () => setIsWSConnected(false);
+            wsRef.current.onerror = () => setIsWSConnected(false);
+
+            setShouldWSReconnect(false);
+        }
+    }, [shouldWSReconnect, setShouldWSReconnect, setIsWSConnected]);
+
+    useEffect(() => {
+        if (shouldClearMessages) {
+            setCanMessages([]);
+            setShouldClearMessages(false);
+        }
+    }, [shouldClearMessages, setShouldClearMessages]);
 
     useEffect(() => {
         // Dynamically import GridStack on the client side
@@ -103,17 +141,17 @@ export default function GridStackComponent({ isWSConnected, setIsWSConnected, db
             if (root) {
                 root.render(
                     <Card className="w-full h-full border-r">
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <div style={{display: "flex", justifyContent: "space-between"}}>
                             <div>ID</div>
                             <div>Table</div>
-                            <DeleteButton onDelete={() => removeWidget(widgetId)} />
+                            <DeleteButton onDelete={() => removeWidget(widgetId)}/>
                         </div>
-                        <TableWidget messages={canMessages} />
+                        <TableWidget messages={canMessages} dbcData={dbcData}/>
                     </Card>
                 );
             }
         });
-    }, [canMessages]);
+    }, [canMessages, dbcData, widgets]);
 
     const removeWidget = (widgetId: number) => {
         const widgetElement = document.querySelector(`[data-widget-id="${widgetId}"]`) as GridItemHTMLElement;
@@ -149,12 +187,12 @@ export default function GridStackComponent({ isWSConnected, setIsWSConnected, db
 
         root.render(
             <Card className="w-full h-full border-r">
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div style={{display: "flex", justifyContent: "space-between"}}>
                     <div>ID</div>
                     <div>Table</div>
-                    <DeleteButton onDelete={() => removeWidget(widgetId)} />
+                    <DeleteButton onDelete={() => removeWidget(widgetId)}/>
                 </div>
-                <TableWidget messages={canMessages} dbcData={dbcData} />
+                <TableWidget messages={canMessages} dbcData={dbcData}/>
             </Card>
         );
 

@@ -22,13 +22,13 @@ interface TableWidgetProps {
 
 // Funktion zum Extrahieren eines Signals aus den Rohdaten
 function extractSignal(data: Uint8Array | number[], signal: Signal): number {
-    let result = 0n;
-    const dataView = new DataView(new Uint8Array(data).buffer);
+    let result = 0;
+    // const dataView = new DataView(new Uint8Array(data).buffer);
 
     // Bit-Extraktion basierend auf Intel (1) oder Motorola (0) Byte-Reihenfolge
     if (signal.byteOrder === 1) { // Intel (LSB)
-        const startByte = Math.floor(signal.startBit / 8);
-        const bitOffset = signal.startBit % 8;
+        // const startByte = Math.floor(signal.startBit / 8);
+        // const bitOffset = signal.startBit % 8;
 
         for (let i = 0; i < signal.length; i++) {
             const currentByte = Math.floor((signal.startBit + i) / 8);
@@ -37,7 +37,7 @@ function extractSignal(data: Uint8Array | number[], signal: Signal): number {
             if (currentByte < data.length) {
                 const bit = (data[currentByte] >> currentBit) & 1;
                 if (bit) {
-                    result |= 1n << BigInt(i);
+                    result |= (1 << i);
                 }
             }
         }
@@ -51,8 +51,8 @@ function extractSignal(data: Uint8Array | number[], signal: Signal): number {
 
             if (currentByte >= 0 && currentByte < data.length) {
                 const bit = (data[currentByte] >> currentBit) & 1;
-                if (bit) {
-                    result |= 1n << BigInt(signal.length - 1 - i);
+                if (bit === 1) {
+                    result |= (1 << (signal.length - 1 - i));
                 }
             }
         }
@@ -101,15 +101,16 @@ export default function TableWidget({ messages, dbcData }: TableWidgetProps) {
             <TableBody>
                 {messages.map((message, i) => {
                     // Debug-Informationen für jede Nachricht
+                    /*
                     console.log("Current message:", {
                         id: message.id,
                         idType: typeof message.id,
                         hexId: message.id.toString(16)
                     });
-
+*/
                     const dbcMessage = dbcData?.messages.find(m => {
                         // Vergleich mit zusätzlicher Debug-Ausgabe
-                        console.log(`Comparing message ID ${message.id} (${typeof message.id}) with DBC ID ${m.id} (${typeof m.id})`);
+                        // console.log(`Comparing message ID ${message.id} (${typeof message.id}) with DBC ID ${m.id} (${typeof m.id})`);
                         return m.id === message.id;
                     });
 
