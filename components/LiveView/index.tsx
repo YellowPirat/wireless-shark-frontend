@@ -31,7 +31,7 @@ export default function LiveView() {
     return (
         <div className="flex h-[calc(100vh-64px)]">
             <Sidebar isWSConnected={isWSConnected} dbcData={dbcData}/>
-            <GridView isWSConnected={isWSConnected} setIsWSConnected={setIsWSConnected}/>
+            <GridView isWSConnected={isWSConnected} setIsWSConnected={setIsWSConnected} dbcData={dbcData}/>
         </div>
     )
 }

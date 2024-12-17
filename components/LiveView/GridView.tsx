@@ -6,11 +6,14 @@ import {GridItemHTMLElement, GridStack as GridStackType } from 'gridstack';
 import 'gridstack/dist/gridstack.min.css';
 import TableWidget from "@/components/widgets/TableWidget";
 import { Card } from "@/components/ui/card";
-import { X } from 'lucide-react';
+
+import {DBCData} from "@/components/DBCParser/DBCParser";
+import DeleteButton from "@/components/custom-ui/DeleteButton"
 
 interface GridViewProps {
     isWSConnected: boolean;
     setIsWSConnected: (value: boolean) => void;
+    dbcData: DBCData | null;
 }
 
 
@@ -21,7 +24,7 @@ interface CanMessage {
     length: number; // Länge der Nachricht
 }
 
-export default function GridStackComponent({ isWSConnected, setIsWSConnected }: GridViewProps) {
+export default function GridStackComponent({ isWSConnected, setIsWSConnected, dbcData }: GridViewProps) {
     const wsRef = useRef<WebSocket | null>(null);
     const gridRef = useRef<GridStackType | null>(null);
     const widgetRoots = useRef<Map<number, ReturnType<typeof createRoot>>>(new Map());
@@ -30,7 +33,6 @@ export default function GridStackComponent({ isWSConnected, setIsWSConnected }: 
     // const [info, setInfo] = useState('');
     const [canMessages, setCanMessages] = useState<CanMessage[]>([]);
     const [widgets, setWidgets] = useState<number[]>([]);
-
 
     useEffect(() => {
         wsRef.current = new WebSocket('ws://' + window.location.host + ':8080/ws');
@@ -104,13 +106,7 @@ export default function GridStackComponent({ isWSConnected, setIsWSConnected }: 
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                             <div>ID</div>
                             <div>Table</div>
-                            <button
-                                onClick={() => removeWidget(widgetId)}
-                                className="w-5 text-gray-800 z-20"
-                                aria-label="Delete widget"
-                            >
-                                <X size={16} />
-                            </button>
+                            <DeleteButton onDelete={() => removeWidget(widgetId)} />
                         </div>
                         <TableWidget messages={canMessages} />
                     </Card>
@@ -156,15 +152,9 @@ export default function GridStackComponent({ isWSConnected, setIsWSConnected }: 
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <div>ID</div>
                     <div>Table</div>
-                    <button
-                        onClick={() => removeWidget(widgetId)}
-                        className="w-5 text-gray-800 z-20"
-                        aria-label="Delete widget"
-                    >
-                        <X size={16} />
-                    </button>
+                    <DeleteButton onDelete={() => removeWidget(widgetId)} />
                 </div>
-                <TableWidget messages={canMessages} />
+                <TableWidget messages={canMessages} dbcData={dbcData} />
             </Card>
         );
 
