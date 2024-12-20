@@ -1,6 +1,6 @@
 import {DBCData} from "@/components/DBCParser/DBCParser";
 
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 
 interface DBCControlProps {
@@ -14,7 +14,7 @@ export default function DBCControl({ dbcData }: DBCControlProps) {
             {dbcData ? (
             <div className="space-y-4">
                 <div className="text-sm text-gray-500">Version: {dbcData.version}</div>
-                <ScrollArea className="h-[400px] w-[250px] rounded-md border p-4">
+                <ScrollArea className="h-[600px] w-[250px] rounded-md border p-1">
                     {dbcData.messages.map((message, index) => (
                         <div key={index}>
                             <span className="font-medium">{message.name}</span>
@@ -33,6 +33,7 @@ export default function DBCControl({ dbcData }: DBCControlProps) {
                             <Separator className="my-3"/>
                         </div>
                     ))}
+                    <ScrollBar orientation="horizontal" />
                 </ScrollArea>
             </div>) : (
                 <div>Lade DBC Daten...</div>
