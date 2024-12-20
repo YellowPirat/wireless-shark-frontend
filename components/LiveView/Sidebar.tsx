@@ -16,7 +16,7 @@ interface SidebarProps {
     dbcData: DBCData | null;
 }
 
-export default function Sidebar({isWSConnected, setShouldWSReconnect, wantLiveUpdate, setWantLiveUpdate, setShouldClearMessages, dbcData}: SidebarProps) {
+export default function ownSidebar({isWSConnected, setShouldWSReconnect, wantLiveUpdate, setWantLiveUpdate, setShouldClearMessages, dbcData}: SidebarProps) {
     return (
         <div className="w-100 border-r bg-gray-50 p-4">
             <Card className="mb-4 p-4">
@@ -26,7 +26,7 @@ export default function Sidebar({isWSConnected, setShouldWSReconnect, wantLiveUp
                              setWantLiveUpdate={setWantLiveUpdate}
                              setShouldClearMessages={setShouldClearMessages}/>
             </Card>
-            <Card className="mb-4 p-4">
+            <Card className="mb-4 p-4 max-h-full">
                 <DBCControl dbcData={dbcData}/>
             </Card>
         </div>
