@@ -10,6 +10,7 @@ interface Signal {
     maximum: number;
     unit: string;
     receiver: string;
+    isSigned: boolean;
 }
 
 interface Message {
@@ -92,7 +93,8 @@ class DBCParser {
                 minimum: parseFloat(match[8]),
                 maximum: parseFloat(match[9]),
                 unit: match[10],
-                receiver: match[11]
+                receiver: match[11],
+                isSigned: true
             };
             this.data.messages[this.data.messages.length - 1].signals.push(signal);
         }

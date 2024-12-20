@@ -10,6 +10,7 @@ export interface Signal {
     maximum: number;
     unit: string;
     receiver: string;
+    isSigned: boolean;
 }
 
 export interface Message {
@@ -65,7 +66,12 @@ export class CANParser {
                     value |= data[startByte + i] << (i * 8);
                 }
             }
-            return value >>> 0; // Unsigned 32-bit
+
+            // Vorzeichenbehandlung für 32-Bit
+            if (signal.isSigned && (value & 0x80000000)) {
+                value = value - 0x100000000;
+            }
+            return value;
         }
 
         // Für andere Signale
@@ -82,7 +88,12 @@ export class CANParser {
             }
         }
 
-        return result >>> 0; // Unsigned
+        // Vorzeichenbehandlung für andere Längen
+        if (signal.isSigned && (result & (1 << (signal.length - 1)))) {
+            result = result - (1 << signal.length);
+        }
+
+        return result;
     }
 
     private extractSignalMotorola(data: Uint8Array | number[], signal: Signal): number {
@@ -98,7 +109,12 @@ export class CANParser {
                     value |= data[startByte - i] << (i * 8);
                 }
             }
-            return value >>> 0; // Unsigned 32-bit
+
+            // Vorzeichenbehandlung für 32-Bit
+            if (signal.isSigned && (value & 0x80000000)) {
+                value = value - 0x100000000;
+            }
+            return value;
         }
 
         // Für andere Signallängen
@@ -115,7 +131,12 @@ export class CANParser {
             }
         }
 
-        return result >>> 0; // Unsigned
+        // Vorzeichenbehandlung für andere Längen
+        if (signal.isSigned && (result & (1 << (signal.length - 1)))) {
+            result = result - (1 << signal.length);
+        }
+
+        return result;
     }
 
     private extractSignal(data: Uint8Array | number[], signal: Signal): number {
