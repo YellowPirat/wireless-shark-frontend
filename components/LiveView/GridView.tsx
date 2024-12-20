@@ -12,6 +12,7 @@ import { CANParser, EnhancedCanMessage } from '@/components/CANParser/CANParser'
 
 import DeleteButton from "@/components/custom-ui/DeleteButton"
 import NumberWidget from "@/components/widgets/NumberWidget";
+import GaugeWidget from "@/components/widgets/GaugeWidget";
 
 interface GridViewProps {
     isWSConnected: boolean;
@@ -152,6 +153,10 @@ export default function GridStackComponent({
     useEffect(() => {
         widgets.forEach(widget => {
             const root = widgetRoots.current.get(widget.widgetID);
+            // HARDCODED!
+            const relevantCanMessages = canMessages.filter(msg => msg.id === 393);
+            const lastCanMessage = relevantCanMessages.at(-1);
+
             if (root) {
                 switch (widget.widgetType) {
                     case "Table":
@@ -168,9 +173,6 @@ export default function GridStackComponent({
                         break;
                     case "Number":
                         // HARDCODED!
-                        const relevantCanMessages = canMessages.filter(msg => msg.id === 10);
-                        const lastCanMessage = relevantCanMessages.at(-1);
-
                         root.render(
                             <Card className="w-full h-full border-r">
                                 <div style={{display: "flex", justifyContent: "space-between"}}>
@@ -178,7 +180,20 @@ export default function GridStackComponent({
                                     <div>Number</div>
                                     <DeleteButton onDelete={() => removeWidget(widget.widgetID)}/>
                                 </div>
-                                <NumberWidget signal={lastCanMessage?.signals[1]} timestamp={lastCanMessage?.timestamp}/>
+                                <NumberWidget signal={lastCanMessage?.signals[0]} timestamp={lastCanMessage?.timestamp}/>
+                            </Card>
+                        );
+                        break;
+                    case "Gauge":
+                        // HARDCODED!
+                        root.render(
+                            <Card className="w-full h-full border-r">
+                                <div style={{display: "flex", justifyContent: "space-between"}}>
+                                    <div>ID: 10</div>
+                                    <div>Gauge</div>
+                                    <DeleteButton onDelete={() => removeWidget(widget.widgetID)}/>
+                                </div>
+                                <GaugeWidget signal={lastCanMessage?.signals[0]} timestamp={lastCanMessage?.timestamp}/>
                             </Card>
                         );
                         break;
@@ -214,6 +229,10 @@ export default function GridStackComponent({
                 widgetElement.setAttribute('gs-w', '2');
                 widgetElement.setAttribute('gs-h', '2');
                 break;
+            case "Gauge":
+                widgetElement.setAttribute('gs-w', '2');
+                widgetElement.setAttribute('gs-h', '2');
+                break;
         }
 
 
@@ -223,6 +242,10 @@ export default function GridStackComponent({
 
         const root = createRoot(contentElement);
         widgetRoots.current.set(widgetId, root);
+
+        // HARDCODED!
+        const relevantCanMessages = canMessages.filter(msg => msg.id === 393);
+        const lastCanMessage = relevantCanMessages.at(-1);
 
         switch (type) {
             case "Table":
@@ -237,11 +260,8 @@ export default function GridStackComponent({
                     </Card>
                 );
                 break;
+            // HARDCODED!
             case "Number":
-                // HARDCODED!
-                const relevantCanMessages = canMessages.filter(msg => msg.id === 10);
-                const lastCanMessage = relevantCanMessages.at(-1);
-
                 root.render(
                     <Card className="w-full h-full border-r">
                         <div style={{display: "flex", justifyContent: "space-between"}}>
@@ -249,7 +269,20 @@ export default function GridStackComponent({
                             <div>Number</div>
                             <DeleteButton onDelete={() => removeWidget(widgetId)}/>
                         </div>
-                        <NumberWidget signal={lastCanMessage?.signals[1]} timestamp={lastCanMessage?.timestamp}/>
+                        <NumberWidget signal={lastCanMessage?.signals[0]} timestamp={lastCanMessage?.timestamp}/>
+                    </Card>
+                );
+                break;
+            case "Gauge":
+                // HARDCODED!
+                root.render(
+                    <Card className="w-full h-full border-r">
+                        <div style={{display: "flex", justifyContent: "space-between"}}>
+                            <div>ID: 10</div>
+                            <div>Gauge</div>
+                            <DeleteButton onDelete={() => removeWidget(widgetId)}/>
+                        </div>
+                        <GaugeWidget signal={lastCanMessage?.signals[0]} timestamp={lastCanMessage?.timestamp}/>
                     </Card>
                 );
                 break;
@@ -289,16 +322,23 @@ export default function GridStackComponent({
             <button
                 type="button"
                 onClick={() => addNewWidget("Table")}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4 ml-2"
             >
                 Add Table
             </button>
             <button
                 type="button"
                 onClick={() => addNewWidget("Number")}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4 ml-2"
             >
                 Add Number
+            </button>
+            <button
+                type="button"
+                onClick={() => addNewWidget("Gauge")}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4 ml-2"
+            >
+                Add Gauge
             </button>
             {/*info && <p className="mb-4 text-green-600">{info}</p>*/}
             <div className="grid-stack"></div>
