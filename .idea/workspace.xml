@@ -4,9 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6c60fddd-d6d5-467a-b23f-e3e147efe9fb" name="Changes" comment="Fixed TyperErrors">
+    <list default="true" id="6c60fddd-d6d5-467a-b23f-e3e147efe9fb" name="Changes" comment="UI improvements">
+      <change afterPath="$PROJECT_DIR$/components/widgets/BinaryWidget.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/components/widgets/HexWidget.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/LiveView/DBCControl.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/LiveView/DBCControl.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/LiveView/GridView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/LiveView/GridView.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/LiveView/Sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/LiveView/Sidebar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/LiveView/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/LiveView/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Navbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/widgets/GaugeWidget.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/widgets/GaugeWidget.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/widgets/NumberWidget.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/widgets/NumberWidget.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/widgets/TableWidget.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/widgets/TableWidget.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +36,9 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file:///var/www/api/dbc/CAN3_UASA2310_Vehicle_mitnode.dbc" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -45,7 +59,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;dev__mario&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/var/www&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/var/www/api/dbc/CAN3_UASA2310_Vehicle_mitnode.dbc&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -62,18 +76,18 @@
       <window_info id="npm" side_tool="true" />
       <window_info id="Commit_Guest" show_stripe_button="false" />
       <window_info id="Pull Requests" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6691177" visible="true" weight="0.15133102" />
-      <window_info id="Commit" order="1" sideWeight="0.6808696" weight="0.15133102" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6691177" visible="true" weight="0.1783854" />
+      <window_info id="Commit" order="1" sideWeight="0.6808696" weight="0.24453124" />
       <window_info id="VcsChanges" order="2" weight="0.3052662" />
       <window_info anchor="bottom" id="Database Changes" />
       <window_info anchor="bottom" id="TypeScript" />
       <window_info anchor="bottom" id="TODO" />
       <window_info anchor="bottom" id="File Transfer" />
-      <window_info anchor="bottom" id="Version Control" order="0" weight="0.26192945" />
+      <window_info anchor="bottom" id="Version Control" order="0" weight="0.3078125" />
       <window_info anchor="bottom" id="Problems" order="1" />
-      <window_info anchor="bottom" id="Problems View" order="2" weight="0.25253037" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.25253037" />
-      <window_info anchor="bottom" id="Services" order="4" weight="0.33143154" />
+      <window_info anchor="bottom" id="Problems View" order="2" weight="0.21406251" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="3" visible="true" weight="0.3453125" />
+      <window_info anchor="bottom" id="Services" order="4" weight="0.3078125" />
       <window_info anchor="bottom" id="Find" order="5" weight="0.3303942" />
       <window_info anchor="right" id="Endpoints" />
       <window_info anchor="right" id="documentation.v2" show_stripe_button="false" side_tool="true" />
@@ -83,7 +97,7 @@
       <window_info anchor="right" id="Database" order="2" weight="0.25" />
       <window_info anchor="right" id="Gradle" order="3" weight="0.25" />
       <window_info anchor="right" id="Maven" order="4" weight="0.25" />
-      <window_info anchor="right" id="Structure" order="5" sideWeight="0.33088237" weight="0.1646412" />
+      <window_info anchor="right" id="Structure" order="5" sideWeight="0.33088237" weight="0.32994792" />
     </layout>
   </component>
   <component name="RecentsManager">
@@ -127,7 +141,9 @@
       <workItem from="1734286494070" duration="41646000" />
       <workItem from="1734427105511" duration="1240000" />
       <workItem from="1734428550132" duration="2073000" />
-      <workItem from="1734445573187" duration="24747000" />
+      <workItem from="1734445573187" duration="31869000" />
+      <workItem from="1734708385414" duration="10862000" />
+      <workItem from="1734966187290" duration="15415000" />
     </task>
     <task id="LOCAL-00001" summary="Experiments with Grids">
       <option name="closed" value="true" />
@@ -345,7 +361,63 @@
       <option name="project" value="LOCAL" />
       <updated>1734472209228</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Switched to static output">
+      <option name="closed" value="true" />
+      <created>1734510336022</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1734510336022</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Changes to .gitignore">
+      <option name="closed" value="true" />
+      <created>1734510413073</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1734510413073</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Changes to .gitignore">
+      <option name="closed" value="true" />
+      <created>1734510442922</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1734510442922</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Preparing for switching to Shadcn/ui Sidebar">
+      <option name="closed" value="true" />
+      <created>1734717716258</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1734717716258</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Fixed Signed error.">
+      <option name="closed" value="true" />
+      <created>1734717741330</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1734717741330</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Added GaugeWidet">
+      <option name="closed" value="true" />
+      <created>1734717751823</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1734717751823</updated>
+    </task>
+    <task id="LOCAL-00034" summary="UI improvements">
+      <option name="closed" value="true" />
+      <created>1734717779516</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1734717779516</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -363,12 +435,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Current State" />
-    <MESSAGE value="Tests with .dbc Frontend parsing." />
-    <MESSAGE value="Merged work." />
-    <MESSAGE value="Hex View" />
-    <MESSAGE value="Folder rename" />
-    <MESSAGE value="Type Errors, No more CAN in Frontend." />
     <MESSAGE value="Init clean Next.js Project with Next.js 14." />
     <MESSAGE value="Added shadcn/ui" />
     <MESSAGE value="Added gridstack" />
@@ -388,6 +454,12 @@
     <MESSAGE value="Fixed Type Errors" />
     <MESSAGE value="Added new NumberWidget; Extracted CAN parsing code to CANParser.tsx" />
     <MESSAGE value="Fixed TyperErrors" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed TyperErrors" />
+    <MESSAGE value="Switched to static output" />
+    <MESSAGE value="Changes to .gitignore" />
+    <MESSAGE value="Preparing for switching to Shadcn/ui Sidebar" />
+    <MESSAGE value="Fixed Signed error." />
+    <MESSAGE value="Added GaugeWidet" />
+    <MESSAGE value="UI improvements" />
+    <option name="LAST_COMMIT_MESSAGE" value="UI improvements" />
   </component>
 </project>
