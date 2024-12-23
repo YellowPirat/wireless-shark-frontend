@@ -15,7 +15,7 @@ export default function NumberWidget({signal, timestamp}: NumberWidgetProps) {
     const lasttimestamp = new Date(timestamp ?? Date.now());
 
     return (
-        <div className={value >= minimum && value <= maximum ? 'bg-green-100 pl-2' : 'bg-red-100 pl-2'}>
+        <div className={value >= minimum && value <= maximum ? 'bg-green-100 pl-2 no-drag' : 'bg-red-100 pl-2 no-drag'}>
             <div className="font-bold">
                 {name}
             </div>
