@@ -22,6 +22,7 @@ export default function LiveView() {
     const [shouldWSReconnect, setShouldWSReconnect] = useState(false);
     const [shouldClearMessages, setShouldClearMessages] = useState(false);
     const [wantLiveUpdate, setWantLiveUpdate] = useState(true);
+    const [widgetToAdd, setWidgetToAdd] = useState<{type: string, CANID: number, signalID: number} | null>(null);
 
     useEffect(() => {
         const fetchDBC = async () => {
@@ -92,6 +93,7 @@ export default function LiveView() {
                      wantLiveUpdate={wantLiveUpdate}
                      setWantLiveUpdate={setWantLiveUpdate}
                      setShouldClearMessages={setShouldClearMessages}
+                     onAddWidget={(type, CANID, signalID) => setWidgetToAdd({type, CANID, signalID})}
                      dbcData={dbcData}>
             </Sidebar>
             <GridView isWSConnected={isWSConnected}
@@ -99,9 +101,11 @@ export default function LiveView() {
                       shouldWSReconnect={shouldWSReconnect}
                       setShouldWSReconnect={setShouldWSReconnect}
                       wantLiveUpdate={wantLiveUpdate}
-                      dbcData={dbcData}
                       shouldClearMessages={shouldClearMessages}
                       setShouldClearMessages={setShouldClearMessages}
+                      widgetToAdd={widgetToAdd}
+                      setWidgetToAdd={setWidgetToAdd}
+                      dbcData={dbcData}
             />
         </div>
     )

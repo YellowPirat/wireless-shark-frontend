@@ -13,6 +13,8 @@ import { CANParser, EnhancedCanMessage } from '@/components/CANParser/CANParser'
 import DeleteButton from "@/components/custom-ui/DeleteButton"
 import NumberWidget from "@/components/widgets/NumberWidget";
 import GaugeWidget from "@/components/widgets/GaugeWidget";
+import HexWidget from "@/components/widgets/HexWidget";
+import BinaryWidget from "@/components/widgets/BinaryWidget";
 
 interface GridViewProps {
     isWSConnected: boolean;
@@ -22,12 +24,16 @@ interface GridViewProps {
     wantLiveUpdate: boolean;
     shouldClearMessages: boolean;
     setShouldClearMessages: (value: boolean) => void;
+    widgetToAdd: {type: string, CANID: number, signalID: number} | null;
+    setWidgetToAdd: (widget: {type: string, CANID: number, signalID: number} | null) => void;
     dbcData: DBCData | null;
 }
 
 interface Widgets {
     widgetID: number;
     widgetType: string;
+    CANID: number;
+    signalID: number;
 }
 
 export default function GridStackComponent({
@@ -38,6 +44,8 @@ export default function GridStackComponent({
                                                wantLiveUpdate,
                                                shouldClearMessages,
                                                setShouldClearMessages,
+                                               widgetToAdd,
+                                               setWidgetToAdd,
                                                dbcData
                                            }: GridViewProps) {
     const wsRef = useRef<WebSocket | null>(null);
@@ -73,14 +81,15 @@ export default function GridStackComponent({
             try {
                 const msg = JSON.parse(event.data);
                 if (msg['id'] != null) {
+                    // HARDCODED!
                     if (parserRef.current) {
                         const enhancedMessage = parserRef.current.interpretMessage(msg);
                         if (wantLiveUpdate) {
-                            setCanMessages((prev) => [...prev, enhancedMessage]);
+                            setCanMessages((prev) => [...prev, enhancedMessage].slice(-1000));
                         }
                     } else {
                         if (wantLiveUpdate) {
-                            setCanMessages((prev) => [...prev, msg]);
+                            setCanMessages((prev) => [...prev, msg].slice(-1000));
                         }
                     }
                 }
@@ -88,7 +97,7 @@ export default function GridStackComponent({
                 console.error('Error parsing message:', error);
             }
         };
-    }, [wantLiveUpdate, shouldWSReconnect]); // Abhängigkeit hinzufügen
+    }, [wantLiveUpdate, shouldWSReconnect]);
 
     useEffect(() => {
         if (shouldWSReconnect) {
@@ -121,21 +130,8 @@ export default function GridStackComponent({
                 cellHeight: '70px',
                 minRow: 1,
                 removable: false,
+                draggable: { cancel: '.no-drag'}
             });//.load(initialItems);
-
-            /*
-            gridRef.current.on('dragstop', (_event: Event, element: Any) => {
-
-                const node = element.gridstackNode;
-                setInfo(`you just dragged node #${node.id} to ${node.x},${node.y} – good job!`);
-
-                // Clear the info text after a two second timeout
-                setTimeout(() => {
-                    setInfo('');
-                }, 2000);
-            });
-
-             */
         };
 
         initializeGridStack();
@@ -153,67 +149,56 @@ export default function GridStackComponent({
     useEffect(() => {
         widgets.forEach(widget => {
             const root = widgetRoots.current.get(widget.widgetID);
-            // HARDCODED!
-            const relevantCanMessages = canMessages.filter(msg => msg.id === 393);
+            const relevantCanMessages = canMessages.filter(msg => msg.id === widget.CANID);
             const lastCanMessage = relevantCanMessages.at(-1);
 
             if (root) {
-                switch (widget.widgetType) {
-                    case "Table":
-                        root.render(
-                            <Card className="w-full h-full border-r">
-                                <div style={{display: "flex", justifyContent: "space-between"}}>
-                                    <div>ID</div>
-                                    <div>Table</div>
-                                    <DeleteButton onDelete={() => removeWidget(widget.widgetID)}/>
-                                </div>
-                                <TableWidget messages={canMessages}/>
-                            </Card>
-                        );
-                        break;
-                    case "Number":
-                        // HARDCODED!
-                        root.render(
-                            <Card className="w-full h-full border-r">
-                                <div style={{display: "flex", justifyContent: "space-between"}}>
-                                    <div>ID: 10</div>
-                                    <div>Number</div>
-                                    <DeleteButton onDelete={() => removeWidget(widget.widgetID)}/>
-                                </div>
-                                <NumberWidget signal={lastCanMessage?.signals[0]} timestamp={lastCanMessage?.timestamp}/>
-                            </Card>
-                        );
-                        break;
-                    case "Gauge":
-                        // HARDCODED!
-                        root.render(
-                            <Card className="w-full h-full border-r">
-                                <div style={{display: "flex", justifyContent: "space-between"}}>
-                                    <div>ID: 10</div>
-                                    <div>Gauge</div>
-                                    <DeleteButton onDelete={() => removeWidget(widget.widgetID)}/>
-                                </div>
-                                <GaugeWidget signal={lastCanMessage?.signals[0]} timestamp={lastCanMessage?.timestamp}/>
-                            </Card>
-                        );
-                        break;
-                    default:
-                        root.render(
-                            <Card className="w-full h-full border-r">
-                                <div style={{display: "flex", justifyContent: "space-between"}}>
-                                    <div>ID</div>
-                                    <div>Unbekannt</div>
-                                    <DeleteButton onDelete={() => removeWidget(widget.widgetID)}/>
-                                </div>
-                            </Card>
-                        );
-                        break;
-                }
+                root.render(
+                    <Card className="w-full h-full border-r">
+                        <div className="cursor-move flex justify-between">
+                            <div>ID: {widget.CANID === -1 ? "All" : widget.CANID.toString(16).padStart(3, '0').toUpperCase()}</div>
+                            <div>{widget.widgetType}</div>
+                            <DeleteButton onDelete={() => removeWidget(widget.widgetID)} />
+                        </div>
+
+                        {widget.widgetType === 'Table' ? (
+                            <TableWidget messages={canMessages} />
+                        ) : widget.widgetType === 'Number' ? (
+                            <NumberWidget
+                                signal={lastCanMessage?.signals[widget.signalID]/* ? lastCanMessage?.signals[widget.signalID] : dbcData?.messages.find(msg => msg.id === widget.CANID)?.signals[widget.signalID]*/}
+                                timestamp={lastCanMessage?.timestamp}
+                            />
+                        ) : widget.widgetType === 'Hex' ? (
+                            <HexWidget
+                                signal={lastCanMessage?.signals[widget.signalID]/* ? lastCanMessage?.signals[widget.signalID] : dbcData?.messages.find(msg => msg.id === widget.CANID)?.signals[widget.signalID]*/}
+                                timestamp={lastCanMessage?.timestamp}
+                            />
+                        ) : widget.widgetType === 'Binary' ? (
+                            <BinaryWidget
+                                signal={lastCanMessage?.signals[widget.signalID]/* ? lastCanMessage?.signals[widget.signalID] : dbcData?.messages.find(msg => msg.id === widget.CANID)?.signals[widget.signalID]*/}
+                                timestamp={lastCanMessage?.timestamp}
+                            />
+                        ) : widget.widgetType === 'Gauge' ? (
+                            <GaugeWidget
+                                signal={lastCanMessage?.signals[widget.signalID]/* ? lastCanMessage?.signals[widget.signalID] : dbcData?.messages.find(msg => msg.id === widget.CANID)?.signals[widget.signalID]*/}
+                                timestamp={lastCanMessage?.timestamp}
+                            />
+                        ) : null}
+                    </Card>
+                );
             }
         });
     }, [canMessages, dbcData, widgets]);
 
-    const addNewWidget = (type: string) => {
+    // Neuer useEffect für das Hinzufügen von Widgets
+    useEffect(() => {
+        if (widgetToAdd) {
+            addNewWidget(widgetToAdd.type, widgetToAdd.CANID, widgetToAdd.signalID);
+            setWidgetToAdd(null); // Reset nach dem Hinzufügen
+        }
+    }, [widgetToAdd]);
+
+    const addNewWidget = (type: string, CANID: number, signalID: number) => {
         if (!gridRef.current) return;
 
         const widgetId = count;
@@ -229,12 +214,19 @@ export default function GridStackComponent({
                 widgetElement.setAttribute('gs-w', '2');
                 widgetElement.setAttribute('gs-h', '2');
                 break;
-            case "Gauge":
+            case "Hex":
                 widgetElement.setAttribute('gs-w', '2');
                 widgetElement.setAttribute('gs-h', '2');
                 break;
+            case "Binary":
+                widgetElement.setAttribute('gs-w', '2');
+                widgetElement.setAttribute('gs-h', '2');
+                break;
+            case "Gauge":
+                widgetElement.setAttribute('gs-w', '3');
+                widgetElement.setAttribute('gs-h', '4');
+                break;
         }
-
 
         const contentElement = document.createElement('div');
         contentElement.className = 'grid-stack-item-content';
@@ -243,64 +235,9 @@ export default function GridStackComponent({
         const root = createRoot(contentElement);
         widgetRoots.current.set(widgetId, root);
 
-        // HARDCODED!
-        const relevantCanMessages = canMessages.filter(msg => msg.id === 393);
-        const lastCanMessage = relevantCanMessages.at(-1);
-
-        switch (type) {
-            case "Table":
-                root.render(
-                    <Card className="w-full h-full border-r">
-                        <div style={{display: "flex", justifyContent: "space-between"}}>
-                            <div>ID</div>
-                            <div>Table</div>
-                            <DeleteButton onDelete={() => removeWidget(widgetId)}/>
-                        </div>
-                        <TableWidget messages={canMessages}/>
-                    </Card>
-                );
-                break;
-            // HARDCODED!
-            case "Number":
-                root.render(
-                    <Card className="w-full h-full border-r">
-                        <div style={{display: "flex", justifyContent: "space-between"}}>
-                            <div>ID: 10</div>
-                            <div>Number</div>
-                            <DeleteButton onDelete={() => removeWidget(widgetId)}/>
-                        </div>
-                        <NumberWidget signal={lastCanMessage?.signals[0]} timestamp={lastCanMessage?.timestamp}/>
-                    </Card>
-                );
-                break;
-            case "Gauge":
-                // HARDCODED!
-                root.render(
-                    <Card className="w-full h-full border-r">
-                        <div style={{display: "flex", justifyContent: "space-between"}}>
-                            <div>ID: 10</div>
-                            <div>Gauge</div>
-                            <DeleteButton onDelete={() => removeWidget(widgetId)}/>
-                        </div>
-                        <GaugeWidget signal={lastCanMessage?.signals[0]} timestamp={lastCanMessage?.timestamp}/>
-                    </Card>
-                );
-                break;
-            default:
-                root.render(
-                    <Card className="w-full h-full border-r">
-                        <div style={{display: "flex", justifyContent: "space-between"}}>
-                            <div>ID</div>
-                            <div>Unbekannt</div>
-                            <DeleteButton onDelete={() => removeWidget(widgetId)}/>
-                        </div>
-                    </Card>
-                );
-                break;
-        }
-
         gridRef.current.makeWidget(widgetElement);
-        setWidgets(prev => [...prev, {widgetID: widgetId, widgetType: type}]);
+
+        setWidgets(prev => [...prev, {widgetID: widgetId, widgetType: type, CANID: CANID, signalID: signalID}]);
         setCount(prev => prev + 1);
     };
 
@@ -319,28 +256,6 @@ export default function GridStackComponent({
 
     return (
         <div className="container mx-auto p-4">
-            <button
-                type="button"
-                onClick={() => addNewWidget("Table")}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4 ml-2"
-            >
-                Add Table
-            </button>
-            <button
-                type="button"
-                onClick={() => addNewWidget("Number")}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4 ml-2"
-            >
-                Add Number
-            </button>
-            <button
-                type="button"
-                onClick={() => addNewWidget("Gauge")}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4 ml-2"
-            >
-                Add Gauge
-            </button>
-            {/*info && <p className="mb-4 text-green-600">{info}</p>*/}
             <div className="grid-stack"></div>
         </div>
     );
