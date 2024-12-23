@@ -26,7 +26,7 @@ export default function GaugeWidget({signal, timestamp}: GaugeWidgetProps) {
     const strokeDashoffset = ((100 - percentage) / 100) * circumference;
 
     return (
-        <div className={value >= minimum && value <= maximum ? 'bg-green-100 p-4 rounded-lg' : 'bg-red-100 p-4 rounded-lg'}>
+        <div className={value >= minimum && value <= maximum ? 'bg-green-100 p-4 rounded-lg no-drag' : 'bg-red-100 p-4 rounded-lg no-drag'}>
             <div className="font-bold mb-2">
                 {name}
             </div>
