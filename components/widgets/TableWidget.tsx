@@ -6,6 +6,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 import { EnhancedCanMessage } from '@/components/CANParser/CANParser';
 
@@ -15,8 +16,9 @@ interface TableWidgetProps {
 
 export default function TableWidget({ messages }: TableWidgetProps) {
     return (
+        <ScrollArea className="no-drag h-[93%] w-full rounded-md border p-1">
         <Table>
-            <TableHeader>
+            <TableHeader className="sticky">
                 <TableRow>
                     <TableHead className="">CAN ID</TableHead>
                     <TableHead>Timestamp</TableHead>
@@ -56,5 +58,6 @@ export default function TableWidget({ messages }: TableWidgetProps) {
                 })}
             </TableBody>
         </Table>
+        </ScrollArea>
     )
 }
