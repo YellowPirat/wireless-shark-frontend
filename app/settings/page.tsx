@@ -1,5 +1,5 @@
-import LiveView from '@/components/LiveView'
+import Settings from '@/components/Settings'
 
 export default function Home() {
-    return <LiveView />
+    return <Settings />
 }
