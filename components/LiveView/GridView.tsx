@@ -27,6 +27,7 @@ interface GridViewProps {
     widgetToAdd: {type: string, CANID: number, signalID: number} | null;
     setWidgetToAdd: (widget: {type: string, CANID: number, signalID: number} | null) => void;
     dbcData: DBCData | null;
+    canSocket: number;
 }
 
 interface Widgets {
@@ -46,7 +47,8 @@ export default function GridStackComponent({
                                                setShouldClearMessages,
                                                widgetToAdd,
                                                setWidgetToAdd,
-                                               dbcData
+                                               dbcData,
+                                               canSocket
                                            }: GridViewProps) {
     const wsRef = useRef<WebSocket | null>(null);
     const gridRef = useRef<GridStackType | null>(null);
@@ -80,7 +82,7 @@ export default function GridStackComponent({
         wsRef.current.onmessage = (event) => {
             try {
                 const msg = JSON.parse(event.data);
-                if (msg['id'] != null) {
+                if (msg['id'] != null && msg['socket_id'] == canSocket) {
                     // HARDCODED!
                     if (parserRef.current) {
                         const enhancedMessage = parserRef.current.interpretMessage(msg);

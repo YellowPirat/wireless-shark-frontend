@@ -16,7 +16,11 @@ import { loadDBCFile, DBCData } from '@/components/DBCParser/DBCParser';
 // import GridControl from "@/components/LiveView/GridControl";
 // import DBCControl from "@/components/LiveView/DBCControl";
 
-export default function LiveView() {
+interface LiveViewProps {
+    canSocket: number;
+}
+
+export default function LiveView({ canSocket }: LiveViewProps) {
     const [dbcData, setDbcData] = useState<DBCData | null>(null);
     const [isWSConnected, setIsWSConnected] = useState(false);
     const [shouldWSReconnect, setShouldWSReconnect] = useState(false);
@@ -106,6 +110,7 @@ export default function LiveView() {
                       widgetToAdd={widgetToAdd}
                       setWidgetToAdd={setWidgetToAdd}
                       dbcData={dbcData}
+                      canSocket={canSocket}
             />
         </div>
     )
