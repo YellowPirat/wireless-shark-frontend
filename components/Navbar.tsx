@@ -13,7 +13,37 @@ export default function Navbar() {
     return (
         <div className="w-full max-w-full flex justify-between px-4 py-2 bg-gray-50 border-b">
             <NavigationMenu className="">
-                <Link href="/live-view" legacyBehavior passHref className="px-4 py-2 hover:bg-gray-100 rounded">
+                <Link href="/live-view-0" legacyBehavior passHref className="px-4 py-2 hover:bg-gray-100 rounded">
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        <LineChart className="w-4 h-4 mr-2"/>
+                        Live View
+                    </NavigationMenuLink>
+                </Link>
+                <Link href="/live-view-1" legacyBehavior passHref className="px-4 py-2 hover:bg-gray-100 rounded">
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        <LineChart className="w-4 h-4 mr-2"/>
+                        Live View
+                    </NavigationMenuLink>
+                </Link>
+                <Link href="/live-view-2" legacyBehavior passHref className="px-4 py-2 hover:bg-gray-100 rounded">
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        <LineChart className="w-4 h-4 mr-2"/>
+                        Live View
+                    </NavigationMenuLink>
+                </Link>
+                <Link href="/live-view-3" legacyBehavior passHref className="px-4 py-2 hover:bg-gray-100 rounded">
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        <LineChart className="w-4 h-4 mr-2"/>
+                        Live View
+                    </NavigationMenuLink>
+                </Link>
+                <Link href="/live-view-4" legacyBehavior passHref className="px-4 py-2 hover:bg-gray-100 rounded">
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        <LineChart className="w-4 h-4 mr-2"/>
+                        Live View
+                    </NavigationMenuLink>
+                </Link>
+                <Link href="/live-view-5" legacyBehavior passHref className="px-4 py-2 hover:bg-gray-100 rounded">
                     <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                         <LineChart className="w-4 h-4 mr-2"/>
                         Live View
