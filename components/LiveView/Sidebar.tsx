@@ -28,7 +28,7 @@ export default function ownSidebar({isWSConnected, setShouldWSReconnect, wantLiv
                              setShouldClearMessages={setShouldClearMessages}
                 />
             </Card>
-            <Card className="mb-4 p-4 max-h-full">
+            <Card className="mb-4 p-4 max-h-full flex-grow-[4]">
                 <DBCControl onAddWidget={onAddWidget}
                             dbcData={dbcData}
                 />

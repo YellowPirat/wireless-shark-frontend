@@ -20,12 +20,12 @@ interface DBCControlProps {
 
 export default function DBCControl({ dbcData, onAddWidget }: DBCControlProps) {
     return (
-        <div>
+        <div className="">
             <h3 className="text-lg font-semibold mb-2">DBC Control</h3>
             {dbcData ? (
                 <div className="space-y-4">
                     <div className="text-sm text-gray-500">Version: {dbcData.version}</div>
-                    <ScrollArea className="h-[600px] w-[250px] rounded-md border p-1">
+                    <ScrollArea className=" w-[250px] h-[300px] rounded-md border p-1">
                         <div className="mt-2">
                             <span onClick={() => onAddWidget("Table", -1, -1)} className="font-medium hover:underline hover:cursor-pointer">All CAN messages</span>
                             <Separator className="my-3"/>
