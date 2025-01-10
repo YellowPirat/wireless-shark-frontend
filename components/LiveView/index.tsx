@@ -27,6 +27,9 @@ export default function LiveView({ canSocket }: LiveViewProps) {
     const [shouldClearMessages, setShouldClearMessages] = useState(false);
     const [wantLiveUpdate, setWantLiveUpdate] = useState(true);
     const [widgetToAdd, setWidgetToAdd] = useState<{type: string, CANID: number, signalID: number} | null>(null);
+    const [shouldRemoveAllWidgets, setShouldRemoveAllWidgets] = useState(false);
+    const [shouldSaveAllWidgets, setShouldSaveAllWidgets] = useState(false);
+    const [shouldLoadAllWidgets, setShouldLoadAllWidgets] = useState(false);
 
     useEffect(() => {
         const fetchDBC = async () => {
@@ -46,50 +49,6 @@ export default function LiveView({ canSocket }: LiveViewProps) {
         fetchDBC();
     }, []);
 
-    /*
-    <Sidebar className="w-100 border-r bg-gray-50 p-4">
-                <Collapsible defaultOpen className="group/collapsible">
-                    <SidebarGroup>
-                        <SidebarGroupLabel asChild>
-                            <CollapsibleTrigger>
-                                Help
-                                <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-                            </CollapsibleTrigger>
-                        </SidebarGroupLabel>
-                        <CollapsibleContent>
-                            <SidebarGroupContent>
-                                <Card className="mb-4 p-4">
-                                    <GridControl isWSConnected={isWSConnected}
-                                                 setShouldWSReconnect={setShouldWSReconnect}
-                                                 wantLiveUpdate={wantLiveUpdate}
-                                                 setWantLiveUpdate={setWantLiveUpdate}
-                                                 setShouldClearMessages={setShouldClearMessages}/>
-                                </Card>
-                            </SidebarGroupContent>
-                        </CollapsibleContent>
-                    </SidebarGroup>
-                </Collapsible>
-
-                <Collapsible defaultOpen className="group/collapsible">
-                    <SidebarGroup>
-                        <SidebarGroupLabel asChild>
-                            <CollapsibleTrigger>
-                                Help
-                                <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-                            </CollapsibleTrigger>
-                        </SidebarGroupLabel>
-                        <CollapsibleContent>
-                            <SidebarGroupContent>
-                                <Card className="mb-4 p-4">
-                                    <DBCControl dbcData={dbcData}/>
-                                </Card>
-                            </SidebarGroupContent>
-                        </CollapsibleContent>
-                    </SidebarGroup>
-                </Collapsible>
-            </Sidebar>
-     */
-
     return (
         <div className="flex h-[calc(100vh-64px)]">
             <Sidebar isWSConnected={isWSConnected}
@@ -98,7 +57,10 @@ export default function LiveView({ canSocket }: LiveViewProps) {
                      setWantLiveUpdate={setWantLiveUpdate}
                      setShouldClearMessages={setShouldClearMessages}
                      onAddWidget={(type, CANID, signalID) => setWidgetToAdd({type, CANID, signalID})}
-                     dbcData={dbcData}>
+                     dbcData={dbcData}
+                     setShouldRemoveAllWidgets={setShouldRemoveAllWidgets}
+                     setShouldSaveAllWidgets={setShouldSaveAllWidgets}
+                     setShouldLoadAllWidgets={setShouldLoadAllWidgets}>
             </Sidebar>
             <GridView isWSConnected={isWSConnected}
                       setIsWSConnected={setIsWSConnected}
@@ -111,6 +73,12 @@ export default function LiveView({ canSocket }: LiveViewProps) {
                       setWidgetToAdd={setWidgetToAdd}
                       dbcData={dbcData}
                       canSocket={canSocket}
+                      shouldRemoveAllWidgets={shouldRemoveAllWidgets}
+                      setShouldRemoveAllWidgets={setShouldRemoveAllWidgets}
+                      shouldSaveAllWidgets={shouldSaveAllWidgets}
+                      setShouldSaveAllWidgets={setShouldSaveAllWidgets}
+                      shouldLoadAllWidgets={shouldLoadAllWidgets}
+                      setShouldLoadAllWidgets={setShouldLoadAllWidgets}
             />
         </div>
     )

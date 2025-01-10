@@ -28,6 +28,12 @@ interface GridViewProps {
     setWidgetToAdd: (widget: {type: string, CANID: number, signalID: number} | null) => void;
     dbcData: DBCData | null;
     canSocket: string;
+    shouldRemoveAllWidgets: boolean;
+    setShouldRemoveAllWidgets: (value: boolean) => void;
+    shouldSaveAllWidgets: boolean;
+    setShouldSaveAllWidgets: (value: boolean) => void;
+    shouldLoadAllWidgets: boolean;
+    setShouldLoadAllWidgets: (value: boolean) => void;
 }
 
 interface Widgets {
@@ -48,7 +54,13 @@ export default function GridStackComponent({
                                                widgetToAdd,
                                                setWidgetToAdd,
                                                dbcData,
-                                               canSocket
+                                               canSocket,
+                                               shouldRemoveAllWidgets,
+                                               setShouldRemoveAllWidgets,
+                                               shouldSaveAllWidgets,
+                                               setShouldSaveAllWidgets,
+                                               shouldLoadAllWidgets,
+                                               setShouldLoadAllWidgets
                                            }: GridViewProps) {
     const wsRef = useRef<WebSocket | null>(null);
     const gridRef = useRef<GridStackType | null>(null);
@@ -127,14 +139,14 @@ export default function GridStackComponent({
         // Dynamically import GridStack on the client side
         const initializeGridStack = async () => {
             const {GridStack} = await import('gridstack');
-
+            const serializedFull = localStorage.getItem('savedWidgetLayout');
             gridRef.current = GridStack.init({
                 float: true,
                 cellHeight: '70px',
                 minRow: 1,
                 removable: false,
                 draggable: { cancel: '.no-drag'}
-            });//.load(initialItems);
+            });//.load(serializedFull);
         };
 
         initializeGridStack();
@@ -200,6 +212,51 @@ export default function GridStackComponent({
             setWidgetToAdd(null); // Reset nach dem Hinzufügen
         }
     }, [widgetToAdd]);
+
+    useEffect(() => {
+        if (shouldRemoveAllWidgets == true) {
+            if (!gridRef.current) return;
+            gridRef.current.removeAll();
+            setShouldRemoveAllWidgets(false); // Reset nach dem Hinzufügen
+        }
+    }, [shouldRemoveAllWidgets]);
+
+    useEffect(() => {
+        if (shouldSaveAllWidgets == true) {
+            if (!gridRef.current) return;
+
+            const serializedFull = gridRef.current.save();
+            // const serializedData = serializedFull.children;
+            localStorage.setItem('savedWidgetLayout', JSON.stringify(serializedFull, null, '  '));
+
+            setShouldSaveAllWidgets(false); // Reset nach dem Hinzufügen
+        }
+    }, [shouldSaveAllWidgets]);
+
+    useEffect(() => {
+        if (shouldLoadAllWidgets == true) {
+            if (!gridRef.current) return;
+
+            const serializedFull = localStorage.getItem('savedWidgetLayout');
+            console.log('Geladenes Layout:', serializedFull);
+            console.log('Typ:', typeof serializedFull);
+
+            if (!serializedFull) return;
+
+            // Das gespeicherte Layout muss zuerst geparst werden
+            try {
+                const parsedLayout = JSON.parse(serializedFull);
+                console.log('Geparst:', parsedLayout);
+
+                gridRef.current.removeAll();
+                gridRef.current.load(parsedLayout);
+
+                setShouldLoadAllWidgets(false);
+            } catch (error) {
+                console.error('Fehler beim Parsen des Layouts:', error);
+            }
+        }
+    }, [shouldLoadAllWidgets]);
 
     const addNewWidget = (type: string, CANID: number, signalID: number) => {
         if (!gridRef.current) return;

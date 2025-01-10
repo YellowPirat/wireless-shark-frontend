@@ -11,6 +11,9 @@ interface SidebarProps {
     setShouldClearMessages: (value: boolean) => void;
     onAddWidget: (type: string, CANID: number, signalID: number) => void;
     dbcData: DBCData | null;
+    setShouldRemoveAllWidgets: (value: boolean) => void;
+    setShouldSaveAllWidgets: (value: boolean) => void;
+    setShouldLoadAllWidgets: (value: boolean) => void;
 }
 
 export default function ownSidebar({
@@ -20,7 +23,10 @@ export default function ownSidebar({
                                        setWantLiveUpdate,
                                        setShouldClearMessages,
                                        onAddWidget,
-                                       dbcData
+                                       dbcData,
+                                       setShouldRemoveAllWidgets,
+                                       setShouldSaveAllWidgets,
+                                       setShouldLoadAllWidgets
                                    }: SidebarProps) {
     return (
         <div className="w-[310px] border-r bg-gray-50 p-4 flex flex-col">
@@ -31,6 +37,9 @@ export default function ownSidebar({
                     wantLiveUpdate={wantLiveUpdate}
                     setWantLiveUpdate={setWantLiveUpdate}
                     setShouldClearMessages={setShouldClearMessages}
+                    setShouldRemoveAllWidgets={setShouldRemoveAllWidgets}
+                    setShouldSaveAllWidgets={setShouldSaveAllWidgets}
+                    setShouldLoadAllWidgets={setShouldLoadAllWidgets}
                 />
             </Card>
             <Card className="flex-1 min-h-0 mb-4 p-4">
