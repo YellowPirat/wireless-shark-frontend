@@ -17,7 +17,7 @@ import { loadDBCFile, DBCData } from '@/components/DBCParser/DBCParser';
 // import DBCControl from "@/components/LiveView/DBCControl";
 
 interface LiveViewProps {
-    canSocket: number;
+    canSocket: string;
 }
 
 export default function LiveView({ canSocket }: LiveViewProps) {
