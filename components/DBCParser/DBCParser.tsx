@@ -81,10 +81,12 @@ class DBCParser {
     }
 
     private parseSignal(line: string): void {
-        const match = line.match(/SG_ (\w+) : (\d+)\|(\d+)@(\d+)([-+]) \(([^,]+),([^)]+)\) \[([^|]+)\|([^\]]+)\] "([^"]*)" (\w+)/);
+        // Erweiterter Regex um Leerzeichen in Namen und Empfängern zu erlauben
+        const match = line.match(/SG_ ([\w\s]+) : (\d+)\|(\d+)@(\d+)([-+]) \(([^,]+),([^)]+)\) \[([^|]+)\|([^\]]+)\] "([^"]*)" ([\w\s_]+)/);
+
         if (match && this.data.messages.length > 0) {
             const signal: Signal = {
-                name: match[1],
+                name: match[1].trim(), // trim() um eventuelle Leerzeichen am Rand zu entfernen
                 startBit: parseInt(match[2]),
                 length: parseInt(match[3]),
                 byteOrder: parseInt(match[4]),
@@ -93,10 +95,17 @@ class DBCParser {
                 minimum: parseFloat(match[8]),
                 maximum: parseFloat(match[9]),
                 unit: match[10],
-                receiver: match[11],
-                isSigned: true
+                receiver: match[11].trim(), // trim() um eventuelle Leerzeichen am Rand zu entfernen
+                isSigned: match[5] === '-'  // Setze isSigned basierend auf dem +/- Symbol
             };
+
+            // Debug-Ausgabe um zu prüfen ob alle Signale gematcht werden
+            console.log(`Parsed signal: ${signal.name} (Start: ${signal.startBit})`);
+
             this.data.messages[this.data.messages.length - 1].signals.push(signal);
+        } else {
+            // Debug-Ausgabe für nicht-gematchte Signale
+            console.warn(`Failed to parse signal line: ${line}`);
         }
     }
 
