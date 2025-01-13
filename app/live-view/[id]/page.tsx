@@ -9,12 +9,13 @@ export default async function Home({
 }
 
 export async function generateStaticParams() {
+    //HARDCODED!
     return [
-        { id: 'vcan0' },
-        { id: 'vcan1' },
-        { id: 'vcan2' },
-        { id: 'vcan3' },
-        { id: 'vcan4' },
-        { id: 'vcan5' }
+        { id: 'can0' },
+        { id: 'can1' },
+        { id: 'can2' },
+        { id: 'can3' },
+        { id: 'can4' },
+        { id: 'can5' }
     ]
 }
