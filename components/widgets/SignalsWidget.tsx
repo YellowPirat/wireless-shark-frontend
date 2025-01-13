@@ -1,17 +1,7 @@
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
-import {ScrollArea} from "@/components/ui/scroll-area"
-
 import {EnhancedCanMessage} from '@/components/CANParser/CANParser';
 
 interface SignalsWidgetProps {
-    message: EnhancedCanMessage;
+    message: EnhancedCanMessage | undefined;
 }
 
 export default function SignalsWidget({message}: SignalsWidgetProps) {

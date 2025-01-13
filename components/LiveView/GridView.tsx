@@ -251,17 +251,16 @@ export default function GridStackComponent({
             if (!gridRef.current) return;
 
             const savedWidgets: SavedWidget[] = widgets.map(widget => {
-                const element = document.querySelector(`[data-widget-id="${widget.widgetID}"]`);
                 const gridStackItem = gridRef.current?.engine.nodes.find(
-                    n => n.el.getAttribute('data-widget-id') === widget.widgetID.toString()
+                    n => n?.el?.getAttribute('data-widget-id') === widget.widgetID.toString()
                 );
 
                 return {
                     ...widget,
-                    x: gridStackItem?.x,
-                    y: gridStackItem?.y,
-                    w: gridStackItem?.w,
-                    h: gridStackItem?.h
+                    x: gridStackItem?.x ?? undefined,
+                    y: gridStackItem?.y ?? undefined,
+                    w: gridStackItem?.w ?? undefined,
+                    h: gridStackItem?.h ?? undefined
                 };
             });
 
@@ -275,9 +274,7 @@ export default function GridStackComponent({
     }, [shouldSaveAllWidgets, widgets]);
 
     useEffect(() => {
-        if (shouldLoadAllWidgets) {
-            if (!gridRef.current) return;
-
+        if (shouldLoadAllWidgets && gridRef.current) {  // Prüfe gridRef.current direkt in der if-Bedingung
             const savedLayoutStr = localStorage.getItem('savedWidgetLayout');
             if (!savedLayoutStr) return;
 
@@ -308,7 +305,8 @@ export default function GridStackComponent({
                     const root = createRoot(contentElement);
                     widgetRoots.current.set(widget.widgetID, root);
 
-                    gridRef.current.makeWidget(widgetElement);
+                    // Hier ist gridRef.current garantiert nicht null
+                    gridRef.current!.makeWidget(widgetElement);
 
                     setWidgets(prev => [...prev, {
                         widgetID: widget.widgetID,

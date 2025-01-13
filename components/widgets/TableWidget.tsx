@@ -1,10 +1,20 @@
 import { EnhancedCanMessage } from '@/components/CANParser/CANParser';
 import { memo, useMemo, useRef, useEffect, useState } from 'react';
-import { VariableSizeList } from 'react-window';
+import { VariableSizeList, ListChildComponentProps, ListOnScrollProps } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 interface TableWidgetProps {
     messages: EnhancedCanMessage[];
+}
+
+interface RowData {
+    messages: EnhancedCanMessage[];
+}
+
+interface RowProps extends ListChildComponentProps<RowData> {
+    data: RowData;
+    index: number;
+    style: React.CSSProperties;
 }
 
 const BASE_ROW_HEIGHT = 40;
@@ -17,8 +27,12 @@ const getRowHeight = (message: EnhancedCanMessage) => {
     return Math.max(BASE_ROW_HEIGHT, SIGNAL_HEIGHT * message.signals.length) + 12;
 };
 
-const formatTimestamp = (timestamp: number) => {
-    const date = new Date(timestamp);
+const formatTimestamp = (timestamp: string | Date | number): string => {
+    // Konvertiere den Timestamp in ein Date-Objekt
+    const date = typeof timestamp === 'string' ? new Date(timestamp) :
+        timestamp instanceof Date ? timestamp :
+            new Date(timestamp);
+
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
     const seconds = date.getSeconds().toString().padStart(2, '0');
@@ -27,7 +41,7 @@ const formatTimestamp = (timestamp: number) => {
     return `${hours}:${minutes}:${seconds}.${milliseconds}`;
 };
 
-const Row = memo(({ data, index, style }: any) => {
+const Row = memo(({ data, index, style }: RowProps) => {
     const message = data.messages[index];
 
     const payload = useMemo(() =>
@@ -111,7 +125,7 @@ const TableWidget = memo(({ messages }: TableWidgetProps) => {
     }, [displayMessages, isUserScrolling]);
 
     // Handle user scroll
-    const handleScroll = ({ scrollOffset, scrollUpdateWasRequested }: any) => {
+    const handleScroll = ({ scrollUpdateWasRequested }: ListOnScrollProps) => {
         // Wenn der Scroll nicht von unserem Code ausgelöst wurde
         if (!scrollUpdateWasRequested) {
             setIsUserScrolling(true);
