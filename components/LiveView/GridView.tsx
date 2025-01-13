@@ -16,6 +16,7 @@ import GaugeWidget from "@/components/widgets/GaugeWidget";
 import HexWidget from "@/components/widgets/HexWidget";
 import BinaryWidget from "@/components/widgets/BinaryWidget";
 import LineChartWidget from "@/components/widgets/LineChartWidget";
+import SignalsWidget from "@/components/widgets/SignalsWidget";
 
 interface GridViewProps {
     isWSConnected: boolean;
@@ -181,6 +182,8 @@ export default function GridStackComponent({
 
                         {widget.widgetType === 'Table' ? (
                             <TableWidget messages={canMessages} />
+                        ) : widget.widgetType === 'FilteredTable' ? (
+                            <TableWidget messages={relevantCanMessages} />
                         ) : widget.widgetType === 'Number' ? (
                             <NumberWidget
                                 signal={lastCanMessage?.signals[widget.signalID]/* ? lastCanMessage?.signals[widget.signalID] : dbcData?.messages.find(msg => msg.id === widget.CANID)?.signals[widget.signalID]*/}
@@ -203,6 +206,8 @@ export default function GridStackComponent({
                             />
                         ) : widget.widgetType === 'LineChart' ? (
                             <LineChartWidget messages={relevantCanMessages.slice(-50)} signalID={widget.signalID} />
+                        ) : widget.widgetType === 'Signals' ? (
+                            <SignalsWidget message={lastCanMessage} />
                         ) : null}
                     </Card>
                 );
@@ -275,6 +280,10 @@ export default function GridStackComponent({
                 widgetElement.setAttribute('gs-w', '6');
                 widgetElement.setAttribute('gs-h', '4');
                 break;
+            case "FilteredTable":
+                widgetElement.setAttribute('gs-w', '6');
+                widgetElement.setAttribute('gs-h', '4');
+                break;
             case "Number":
                 widgetElement.setAttribute('gs-w', '2');
                 widgetElement.setAttribute('gs-h', '2');
@@ -294,6 +303,10 @@ export default function GridStackComponent({
             case "LineChart":
                 widgetElement.setAttribute('gs-w', '4');
                 widgetElement.setAttribute('gs-h', '5');
+                break;
+            case "Signals":
+                widgetElement.setAttribute('gs-w', '3');
+                widgetElement.setAttribute('gs-h', '4');
                 break;
         }
 

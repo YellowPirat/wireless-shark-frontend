@@ -1,6 +1,6 @@
-import { DBCData } from "@/components/DBCParser/DBCParser";
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
+import {DBCData} from "@/components/DBCParser/DBCParser";
+import {ScrollArea} from "@/components/ui/scroll-area"
+import {Separator} from "@/components/ui/separator"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -16,7 +16,7 @@ interface DBCControlProps {
     dbcData: DBCData | null;
 }
 
-export default function DBCControl({ dbcData, onAddWidget }: DBCControlProps) {
+export default function DBCControl({dbcData, onAddWidget}: DBCControlProps) {
     return (
         <div className="h-full flex flex-col">
             <h3 className="text-lg font-semibold mb-2">DBC Control</h3>
@@ -35,64 +35,84 @@ export default function DBCControl({ dbcData, onAddWidget }: DBCControlProps) {
                                 <Separator className="my-3"/>
                             </div>
                             {dbcData.messages.map((message, index) => (
-                                <div key={index}>
+                                <DropdownMenu key={index}>
+                                    <DropdownMenuTrigger asChild>
+                                        <div key={index}>
                                     <span
-                                        onClick={() => onAddWidget("Signals", message.id, -1)}
                                         className="font-medium hover:underline hover:cursor-pointer"
                                     >
                                         {message.name}
                                     </span>
-                                    <span className="pl-2 text-sm text-gray-500">
+                                            <span className="pl-2 text-sm text-gray-500">
                                         ID: {message.id}
                                     </span>
-                                    {message.signals.map((signal, sigIndex) => (
-                                        <DropdownMenu key={sigIndex}>
-                                            <DropdownMenuTrigger asChild>
-                                                <div className="pl-2 rounded-md">
-                                                    <Separator className="my-1"/>
-                                                    <span className="font-medium hover:underline hover:cursor-pointer">
+                                            {message.signals.map((signal, sigIndex) => (
+                                                <DropdownMenu key={sigIndex}>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <div className="pl-2 rounded-md">
+                                                            <Separator className="my-1"/>
+                                                            <span
+                                                                className="font-medium hover:underline hover:cursor-pointer">
                                                         {signal.name}
                                                     </span>
-                                                    <span className="pl-2 pr-8 text-sm text-gray-500">
+                                                            <span className="pl-2 pr-8 text-sm text-gray-500">
                                                         Start: {signal.startBit}
                                                     </span>
-                                                </div>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent className="w-56">
-                                                <DropdownMenuLabel>Add Widget</DropdownMenuLabel>
-                                                <DropdownMenuSeparator/>
-                                                <DropdownMenuGroup>
-                                                    <DropdownMenuItem
-                                                        onClick={() => onAddWidget("Number", message.id, sigIndex)}
-                                                    >
-                                                        Number
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() => onAddWidget("Binary", message.id, sigIndex)}
-                                                    >
-                                                        Binary
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() => onAddWidget("Hex", message.id, sigIndex)}
-                                                    >
-                                                        Hex
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() => onAddWidget("Gauge", message.id, sigIndex)}
-                                                    >
-                                                        Gauge
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() => onAddWidget("LineChart", message.id, sigIndex)}
-                                                    >
-                                                        LineChart
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuGroup>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    ))}
-                                    <Separator className="my-3"/>
-                                </div>
+                                                        </div>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent className="w-56">
+                                                        <DropdownMenuLabel>Add Widget</DropdownMenuLabel>
+                                                        <DropdownMenuSeparator/>
+                                                        <DropdownMenuGroup>
+                                                            <DropdownMenuItem
+                                                                onClick={() => onAddWidget("Number", message.id, sigIndex)}
+                                                            >
+                                                                Number
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                onClick={() => onAddWidget("Binary", message.id, sigIndex)}
+                                                            >
+                                                                Binary
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                onClick={() => onAddWidget("Hex", message.id, sigIndex)}
+                                                            >
+                                                                Hex
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                onClick={() => onAddWidget("Gauge", message.id, sigIndex)}
+                                                            >
+                                                                Gauge
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                onClick={() => onAddWidget("LineChart", message.id, sigIndex)}
+                                                            >
+                                                                LineChart
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuGroup>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            ))}
+                                            <Separator className="my-3"/>
+                                        </div>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-56">
+                                        <DropdownMenuLabel>Add Widget</DropdownMenuLabel>
+                                        <DropdownMenuSeparator/>
+                                        <DropdownMenuGroup>
+                                            <DropdownMenuItem
+                                                onClick={() => onAddWidget("FilteredTable", message.id, -1)}
+                                            >
+                                                Filtered Table
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem
+                                                onClick={() => onAddWidget("Signals", message.id, -1)}
+                                            >
+                                                Signals
+                                            </DropdownMenuItem>
+                                        </DropdownMenuGroup>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             ))}
                         </div>
                     </ScrollArea>
