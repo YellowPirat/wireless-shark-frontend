@@ -82,6 +82,7 @@ export default function LineChartWidget({messages, signalID}: LineChartWidgetPro
                     fillOpacity={0.4}
                     stroke="var(--color-signal)"
                     stackId="a"
+                    isAnimationActive={false}
                 />
             </AreaChart>
         </ChartContainer>
