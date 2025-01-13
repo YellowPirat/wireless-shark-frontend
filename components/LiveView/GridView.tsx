@@ -15,6 +15,7 @@ import NumberWidget from "@/components/widgets/NumberWidget";
 import GaugeWidget from "@/components/widgets/GaugeWidget";
 import HexWidget from "@/components/widgets/HexWidget";
 import BinaryWidget from "@/components/widgets/BinaryWidget";
+import LineChartWidget from "@/components/widgets/LineChartWidget";
 
 interface GridViewProps {
     isWSConnected: boolean;
@@ -99,6 +100,8 @@ export default function GridStackComponent({
 
                     if (parserRef.current) {
                         const enhancedMessage = parserRef.current.interpretMessage(msg);
+                        // console.log(msg);
+                        // console.log(enhancedMessage);
                         if (wantLiveUpdate) {
                             setCanMessages((prev) => [...prev, enhancedMessage].slice(-1000));
                         }
@@ -139,7 +142,7 @@ export default function GridStackComponent({
         // Dynamically import GridStack on the client side
         const initializeGridStack = async () => {
             const {GridStack} = await import('gridstack');
-            const serializedFull = localStorage.getItem('savedWidgetLayout');
+            // const serializedFull = localStorage.getItem('savedWidgetLayout');
             gridRef.current = GridStack.init({
                 float: true,
                 cellHeight: '70px',
@@ -198,6 +201,8 @@ export default function GridStackComponent({
                                 signal={lastCanMessage?.signals[widget.signalID]/* ? lastCanMessage?.signals[widget.signalID] : dbcData?.messages.find(msg => msg.id === widget.CANID)?.signals[widget.signalID]*/}
                                 timestamp={lastCanMessage?.timestamp}
                             />
+                        ) : widget.widgetType === 'LineChart' ? (
+                            <LineChartWidget messages={relevantCanMessages.slice(-50)} signalID={widget.signalID} />
                         ) : null}
                     </Card>
                 );
@@ -285,6 +290,10 @@ export default function GridStackComponent({
             case "Gauge":
                 widgetElement.setAttribute('gs-w', '3');
                 widgetElement.setAttribute('gs-h', '4');
+                break;
+            case "LineChart":
+                widgetElement.setAttribute('gs-w', '4');
+                widgetElement.setAttribute('gs-h', '5');
                 break;
         }
 
