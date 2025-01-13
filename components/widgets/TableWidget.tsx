@@ -46,7 +46,7 @@ export default function TableWidget({ messages }: TableWidgetProps) {
                                         return (
                                             <div key={index} className="text-sm">
                                                 <span className="font-medium">{signal.name}:</span>{' '}
-                                                {signal.value.toFixed(0)} {signal.unit}
+                                                {signal.value.toFixed(2)} {signal.unit}
                                             </div>
                                         );
                                         })
