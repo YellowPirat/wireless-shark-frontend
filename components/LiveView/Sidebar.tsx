@@ -1,3 +1,5 @@
+'use client';
+
 import DBCControl from './DBCControl'
 import GridControl from './GridControl'
 import { Card } from '@/components/ui/card'
@@ -16,18 +18,18 @@ interface SidebarProps {
     setShouldLoadAllWidgets: (value: boolean) => void;
 }
 
-export default function ownSidebar({
-                                       isWSConnected,
-                                       setShouldWSReconnect,
-                                       wantLiveUpdate,
-                                       setWantLiveUpdate,
-                                       setShouldClearMessages,
-                                       onAddWidget,
-                                       dbcData,
-                                       setShouldRemoveAllWidgets,
-                                       setShouldSaveAllWidgets,
-                                       setShouldLoadAllWidgets
-                                   }: SidebarProps) {
+export default function Sidebar({
+                                    isWSConnected,
+                                    setShouldWSReconnect,
+                                    wantLiveUpdate,
+                                    setWantLiveUpdate,
+                                    setShouldClearMessages,
+                                    onAddWidget,
+                                    dbcData,
+                                    setShouldRemoveAllWidgets,
+                                    setShouldSaveAllWidgets,
+                                    setShouldLoadAllWidgets
+                                }: SidebarProps) {
     return (
         <div className="w-[310px] border-r bg-gray-50 p-4 flex flex-col">
             <Card className="shrink-0 mb-4 p-4">
@@ -52,5 +54,5 @@ export default function ownSidebar({
                 created by TI 5 in WiSe 2024/25
             </div>
         </div>
-    )
+    );
 }

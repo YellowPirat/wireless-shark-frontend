@@ -1,11 +1,11 @@
 import LiveView from '@/components/LiveView'
 
-export default async function Home({
+export default function Page({
                                  params,
                              }: {
-    params: Promise<{ id: string }>
+    params: { id: string }
 }) {
-    return <LiveView canSocket={(await params).id}/>
+    return <LiveView canSocket={params.id}/>
 }
 
 export async function generateStaticParams() {
