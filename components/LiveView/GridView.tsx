@@ -45,6 +45,21 @@ interface Widgets {
     signalID: number;
 }
 
+interface SavedWidget {
+    widgetID: number;
+    widgetType: string;
+    CANID: number;
+    signalID: number;
+    x?: number;
+    y?: number;
+    w?: number;
+    h?: number;
+}
+
+interface SavedLayout {
+    widgets: SavedWidget[];
+}
+
 export default function GridStackComponent({
                                                isWSConnected,
                                                setIsWSConnected,
@@ -232,38 +247,82 @@ export default function GridStackComponent({
     }, [shouldRemoveAllWidgets]);
 
     useEffect(() => {
-        if (shouldSaveAllWidgets == true) {
+        if (shouldSaveAllWidgets) {
             if (!gridRef.current) return;
 
-            const serializedFull = gridRef.current.save();
-            // const serializedData = serializedFull.children;
-            localStorage.setItem('savedWidgetLayout', JSON.stringify(serializedFull, null, '  '));
+            const savedWidgets: SavedWidget[] = widgets.map(widget => {
+                const element = document.querySelector(`[data-widget-id="${widget.widgetID}"]`);
+                const gridStackItem = gridRef.current?.engine.nodes.find(
+                    n => n.el.getAttribute('data-widget-id') === widget.widgetID.toString()
+                );
 
-            setShouldSaveAllWidgets(false); // Reset nach dem Hinzufügen
+                return {
+                    ...widget,
+                    x: gridStackItem?.x,
+                    y: gridStackItem?.y,
+                    w: gridStackItem?.w,
+                    h: gridStackItem?.h
+                };
+            });
+
+            const layoutToSave: SavedLayout = {
+                widgets: savedWidgets
+            };
+
+            localStorage.setItem('savedWidgetLayout', JSON.stringify(layoutToSave));
+            setShouldSaveAllWidgets(false);
         }
-    }, [shouldSaveAllWidgets]);
+    }, [shouldSaveAllWidgets, widgets]);
 
     useEffect(() => {
-        if (shouldLoadAllWidgets == true) {
+        if (shouldLoadAllWidgets) {
             if (!gridRef.current) return;
 
-            const serializedFull = localStorage.getItem('savedWidgetLayout');
-            console.log('Geladenes Layout:', serializedFull);
-            console.log('Typ:', typeof serializedFull);
+            const savedLayoutStr = localStorage.getItem('savedWidgetLayout');
+            if (!savedLayoutStr) return;
 
-            if (!serializedFull) return;
-
-            // Das gespeicherte Layout muss zuerst geparst werden
             try {
-                const parsedLayout = JSON.parse(serializedFull);
-                console.log('Geparst:', parsedLayout);
-
+                // Entferne zuerst alle bestehenden Widgets
                 gridRef.current.removeAll();
-                gridRef.current.load(parsedLayout);
+                widgetRoots.current.clear();
+                setWidgets([]);
+
+                const savedLayout: SavedLayout = JSON.parse(savedLayoutStr);
+
+                // Füge jedes Widget einzeln hinzu
+                savedLayout.widgets.forEach(widget => {
+                    const widgetElement = document.createElement('div');
+                    widgetElement.className = 'grid-stack-item';
+                    widgetElement.setAttribute('data-widget-id', widget.widgetID.toString());
+
+                    // Setze die Position und Größe
+                    if (widget.x !== undefined) widgetElement.setAttribute('gs-x', widget.x.toString());
+                    if (widget.y !== undefined) widgetElement.setAttribute('gs-y', widget.y.toString());
+                    if (widget.w !== undefined) widgetElement.setAttribute('gs-w', widget.w.toString());
+                    if (widget.h !== undefined) widgetElement.setAttribute('gs-h', widget.h.toString());
+
+                    const contentElement = document.createElement('div');
+                    contentElement.className = 'grid-stack-item-content';
+                    widgetElement.appendChild(contentElement);
+
+                    const root = createRoot(contentElement);
+                    widgetRoots.current.set(widget.widgetID, root);
+
+                    gridRef.current.makeWidget(widgetElement);
+
+                    setWidgets(prev => [...prev, {
+                        widgetID: widget.widgetID,
+                        widgetType: widget.widgetType,
+                        CANID: widget.CANID,
+                        signalID: widget.signalID
+                    }]);
+
+                    setCount(prev => Math.max(prev, widget.widgetID + 1));
+                });
 
                 setShouldLoadAllWidgets(false);
             } catch (error) {
-                console.error('Fehler beim Parsen des Layouts:', error);
+                console.error('Fehler beim Laden des Layouts:', error);
             }
         }
     }, [shouldLoadAllWidgets]);
