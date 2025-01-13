@@ -119,11 +119,11 @@ export default function GridStackComponent({
                         // console.log(msg);
                         // console.log(enhancedMessage);
                         if (wantLiveUpdate) {
-                            setCanMessages((prev) => [...prev, enhancedMessage].slice(-1000));
+                            setCanMessages((prev) => [...prev, enhancedMessage].slice(-10000));
                         }
                     } else {
                         if (wantLiveUpdate) {
-                            setCanMessages((prev) => [...prev, msg].slice(-1000));
+                            setCanMessages((prev) => [...prev, msg].slice(-10000));
                         }
                     }
                 }
@@ -198,7 +198,7 @@ export default function GridStackComponent({
                         {widget.widgetType === 'Table' ? (
                             <TableWidget messages={canMessages} />
                         ) : widget.widgetType === 'FilteredTable' ? (
-                            <TableWidget messages={relevantCanMessages} />
+                            <TableWidget messages={relevantCanMessages.slice(-200)} />
                         ) : widget.widgetType === 'Number' ? (
                             <NumberWidget
                                 signal={lastCanMessage?.signals[widget.signalID]/* ? lastCanMessage?.signals[widget.signalID] : dbcData?.messages.find(msg => msg.id === widget.CANID)?.signals[widget.signalID]*/}
