@@ -155,11 +155,6 @@ export class CANParser {
         // Anwendung von Faktor und Offset
         const value = rawValue * signal.factor + signal.offset;
 
-        console.log(rawValue);
-        console.log(signal.factor);
-        console.log(value);
-
-
         // Wertebegrenzung, falls minimum und maximum definiert sind
         //if (typeof signal.minimum === 'number' && typeof signal.maximum === 'number') {
         //    return Math.min(Math.max(value, signal.minimum), signal.maximum);
