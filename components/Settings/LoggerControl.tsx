@@ -10,7 +10,6 @@ interface CANAssignment {
   YAMLFile: string;
 }
 
-
 interface Props {
   availableFiles: string[];
   setAvailableFiles: React.Dispatch<React.SetStateAction<string[]>>;
@@ -21,12 +20,10 @@ export function LoggerControl({ availableFiles, setAvailableFiles, fetchFiles }:
   const [loggerStatus, setLoggerStatus] = useState<string>(""); // Logger-Status
   const [assignments, setAssignments] = useState<CANAssignment[]>([]); // CAN-Zuweisungen
   const [selectedCanSocket, setSelectedCanSocket] = useState<string | null>(null); // Aktueller CAN-Socket
-
-  // Dateien und Zuweisungen laden
-  useEffect(() => {
-    fetchFiles();
-    fetchAssignments();
-  }, []);
+useEffect(() => {
+  fetchAssignments();
+  fetchFiles();
+}, [])
 
   // Zuweisungen vom Server holen
   const fetchAssignments = async () => {
@@ -52,9 +49,9 @@ export function LoggerControl({ availableFiles, setAvailableFiles, fetchFiles }:
     })
       .then((res) => {
         if (res.ok) {
-          alert("Zuweisungen erfolgreich gespeichert!");
+          console.log("Zuweisungen erfolgreich gespeichert!");
         } else {
-          alert("Fehler beim Speichern der Zuweisungen");
+          console.log("Fehler beim Speichern der Zuweisungen");
         }
       })
       .catch((err) => console.error("Fehler beim Speichern:", err));
@@ -133,8 +130,8 @@ export function LoggerControl({ availableFiles, setAvailableFiles, fetchFiles }:
   };
 
   return (
-    <div className="p-4 w-100 rounded-lg shadow-lg ">
-      <h2 className="text-xl font-bold mb-4">Logger Steuerung</h2>
+    <div>
+      <h2 className="text-2xl font-semibold mb-4">Logger Steuerung</h2>
 
       {/* Tabelle zur Zuweisung */}
       <table className="table-auto w-full border-collapse border border-gray-300 mb-4">
