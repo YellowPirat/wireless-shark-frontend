@@ -81,22 +81,39 @@ class DBCParser {
     }
 
     private parseSignal(line: string): void {
-        const match = line.match(/SG_ (\w+) : (\d+)\|(\d+)@(\d+)([-+]) \(([^,]+),([^)]+)\) \[([^|]+)\|([^\]]+)\] "([^"]*)" (\w+)/);
-        if (match && this.data.messages.length > 0) {
-            const signal: Signal = {
-                name: match[1],
-                startBit: parseInt(match[2]),
-                length: parseInt(match[3]),
-                byteOrder: parseInt(match[4]),
-                factor: parseFloat(match[6]),
-                offset: parseFloat(match[7]),
-                minimum: parseFloat(match[8]),
-                maximum: parseFloat(match[9]),
-                unit: match[10],
-                receiver: match[11],
-                isSigned: true
-            };
+        // Erste Aufteilung bei den Hauptkomponenten
+        const mainParts = line.trim().split(/\s*:\s*/);
+        if (mainParts.length !== 2) return;
+
+        // Parse Signal Name
+        const nameMatch = mainParts[0].match(/SG_\s+([\w\s]+)/);
+        if (!nameMatch) return;
+        const name = nameMatch[1].trim();
+
+        // Parse die technischen Details
+        const detailsMatch = mainParts[1].match(/(\d+)\|(\d+)@(\d+)([-+])\s*\(([^,]+),([^)]+)\)\s*\[([^|]+)\|([^\]]+)\]\s*"([^"]*)"\s*([\w\s_]+)/);
+        if (!detailsMatch) return;
+
+        const factorStr = detailsMatch[5].toLowerCase(); // Konvertiere zu lowercase um sowohl 'e' als auch 'E' zu unterstützen
+        const factor = factorStr.includes('e') ? parseFloat(factorStr) : parseFloat(detailsMatch[5]);
+
+        const signal: Signal = {
+            name,
+            startBit: parseInt(detailsMatch[1]),
+            length: parseInt(detailsMatch[2]),
+            byteOrder: parseInt(detailsMatch[3]),
+            isSigned: detailsMatch[4] === '-',
+            factor: factor,
+            offset: parseFloat(detailsMatch[6]),
+            minimum: parseFloat(detailsMatch[7]),
+            maximum: parseFloat(detailsMatch[8]),
+            unit: detailsMatch[9],
+            receiver: detailsMatch[10].trim()
+        };
+
+        if (this.data.messages.length > 0) {
             this.data.messages[this.data.messages.length - 1].signals.push(signal);
+            //console.log(signal);
         }
     }
 

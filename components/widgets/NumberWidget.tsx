@@ -20,7 +20,7 @@ export default function NumberWidget({signal, timestamp}: NumberWidgetProps) {
                 {name}
             </div>
             <div className="text-2xl font-mono">
-                {value.toFixed(0)}{unit}
+                {value.toFixed(2)}{unit}
             </div>
             <div className="text-sm text-gray-500">
                 Range: [{minimum} to {maximum}]{unit}

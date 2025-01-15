@@ -1,5 +1,6 @@
 import {redirect} from 'next/navigation';
 
 export default async function Home() {
-    redirect('/live-view');
+    // HARDCODED!
+    redirect('/live-view/can0');
 }

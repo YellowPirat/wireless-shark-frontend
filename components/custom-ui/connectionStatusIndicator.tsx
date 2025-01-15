@@ -6,7 +6,7 @@ export default function ConnectionStatusIndicator({isConnected}: IndicatorProps)
 
     return (
         <div className="pl-2 pr-1" style={{display: "flex", justifyContent: "space-between"}}>
-            <p>{isConnected ? "Verbunden" : "Getrennt"}</p>
+            <p>{isConnected ? "Connected" : "Disconnected"}</p>
             <div className="relative inline-block p-1">
                 {/* Status indicator dot */}
 

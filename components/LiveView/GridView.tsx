@@ -15,6 +15,8 @@ import NumberWidget from "@/components/widgets/NumberWidget";
 import GaugeWidget from "@/components/widgets/GaugeWidget";
 import HexWidget from "@/components/widgets/HexWidget";
 import BinaryWidget from "@/components/widgets/BinaryWidget";
+import LineChartWidget from "@/components/widgets/LineChartWidget";
+import SignalsWidget from "@/components/widgets/SignalsWidget";
 
 interface GridViewProps {
     isWSConnected: boolean;
@@ -27,6 +29,13 @@ interface GridViewProps {
     widgetToAdd: {type: string, CANID: number, signalID: number} | null;
     setWidgetToAdd: (widget: {type: string, CANID: number, signalID: number} | null) => void;
     dbcData: DBCData | null;
+    canSocket: string;
+    shouldRemoveAllWidgets: boolean;
+    setShouldRemoveAllWidgets: (value: boolean) => void;
+    shouldSaveAllWidgets: boolean;
+    setShouldSaveAllWidgets: (value: boolean) => void;
+    shouldLoadAllWidgets: boolean;
+    setShouldLoadAllWidgets: (value: boolean) => void;
 }
 
 interface Widgets {
@@ -34,6 +43,21 @@ interface Widgets {
     widgetType: string;
     CANID: number;
     signalID: number;
+}
+
+interface SavedWidget {
+    widgetID: number;
+    widgetType: string;
+    CANID: number;
+    signalID: number;
+    x?: number;
+    y?: number;
+    w?: number;
+    h?: number;
+}
+
+interface SavedLayout {
+    widgets: SavedWidget[];
 }
 
 export default function GridStackComponent({
@@ -46,7 +70,14 @@ export default function GridStackComponent({
                                                setShouldClearMessages,
                                                widgetToAdd,
                                                setWidgetToAdd,
-                                               dbcData
+                                               dbcData,
+                                               canSocket,
+                                               shouldRemoveAllWidgets,
+                                               setShouldRemoveAllWidgets,
+                                               shouldSaveAllWidgets,
+                                               setShouldSaveAllWidgets,
+                                               shouldLoadAllWidgets,
+                                               setShouldLoadAllWidgets
                                            }: GridViewProps) {
     const wsRef = useRef<WebSocket | null>(null);
     const gridRef = useRef<GridStackType | null>(null);
@@ -80,16 +111,19 @@ export default function GridStackComponent({
         wsRef.current.onmessage = (event) => {
             try {
                 const msg = JSON.parse(event.data);
-                if (msg['id'] != null) {
+                if (msg['id'] != null && msg['socket_id'] == canSocket) {
                     // HARDCODED!
+
                     if (parserRef.current) {
                         const enhancedMessage = parserRef.current.interpretMessage(msg);
+                        // console.log(msg);
+                        // console.log(enhancedMessage);
                         if (wantLiveUpdate) {
-                            setCanMessages((prev) => [...prev, enhancedMessage].slice(-1000));
+                            setCanMessages((prev) => [...prev, enhancedMessage].slice(-10000));
                         }
                     } else {
                         if (wantLiveUpdate) {
-                            setCanMessages((prev) => [...prev, msg].slice(-1000));
+                            setCanMessages((prev) => [...prev, msg].slice(-10000));
                         }
                     }
                 }
@@ -124,14 +158,14 @@ export default function GridStackComponent({
         // Dynamically import GridStack on the client side
         const initializeGridStack = async () => {
             const {GridStack} = await import('gridstack');
-
+            // const serializedFull = localStorage.getItem('savedWidgetLayout');
             gridRef.current = GridStack.init({
                 float: true,
                 cellHeight: '70px',
                 minRow: 1,
                 removable: false,
                 draggable: { cancel: '.no-drag'}
-            });//.load(initialItems);
+            });//.load(serializedFull);
         };
 
         initializeGridStack();
@@ -163,6 +197,8 @@ export default function GridStackComponent({
 
                         {widget.widgetType === 'Table' ? (
                             <TableWidget messages={canMessages} />
+                        ) : widget.widgetType === 'FilteredTable' ? (
+                            <TableWidget messages={relevantCanMessages.slice(-200)} />
                         ) : widget.widgetType === 'Number' ? (
                             <NumberWidget
                                 signal={lastCanMessage?.signals[widget.signalID]/* ? lastCanMessage?.signals[widget.signalID] : dbcData?.messages.find(msg => msg.id === widget.CANID)?.signals[widget.signalID]*/}
@@ -183,6 +219,10 @@ export default function GridStackComponent({
                                 signal={lastCanMessage?.signals[widget.signalID]/* ? lastCanMessage?.signals[widget.signalID] : dbcData?.messages.find(msg => msg.id === widget.CANID)?.signals[widget.signalID]*/}
                                 timestamp={lastCanMessage?.timestamp}
                             />
+                        ) : widget.widgetType === 'LineChart' ? (
+                            <LineChartWidget messages={relevantCanMessages.slice(-50)} signalID={widget.signalID} />
+                        ) : widget.widgetType === 'Signals' ? (
+                            <SignalsWidget message={lastCanMessage} />
                         ) : null}
                     </Card>
                 );
@@ -198,6 +238,93 @@ export default function GridStackComponent({
         }
     }, [widgetToAdd]);
 
+    useEffect(() => {
+        if (shouldRemoveAllWidgets == true) {
+            if (!gridRef.current) return;
+            gridRef.current.removeAll();
+            setShouldRemoveAllWidgets(false); // Reset nach dem Hinzufügen
+        }
+    }, [shouldRemoveAllWidgets]);
+
+    useEffect(() => {
+        if (shouldSaveAllWidgets) {
+            if (!gridRef.current) return;
+
+            const savedWidgets: SavedWidget[] = widgets.map(widget => {
+                const gridStackItem = gridRef.current?.engine.nodes.find(
+                    n => n?.el?.getAttribute('data-widget-id') === widget.widgetID.toString()
+                );
+
+                return {
+                    ...widget,
+                    x: gridStackItem?.x ?? undefined,
+                    y: gridStackItem?.y ?? undefined,
+                    w: gridStackItem?.w ?? undefined,
+                    h: gridStackItem?.h ?? undefined
+                };
+            });
+
+            const layoutToSave: SavedLayout = {
+                widgets: savedWidgets
+            };
+
+            localStorage.setItem('savedWidgetLayout', JSON.stringify(layoutToSave));
+            setShouldSaveAllWidgets(false);
+        }
+    }, [shouldSaveAllWidgets, widgets]);
+
+    useEffect(() => {
+        if (shouldLoadAllWidgets && gridRef.current) {  // Prüfe gridRef.current direkt in der if-Bedingung
+            const savedLayoutStr = localStorage.getItem('savedWidgetLayout');
+            if (!savedLayoutStr) return;
+
+            try {
+                // Entferne zuerst alle bestehenden Widgets
+                gridRef.current.removeAll();
+                widgetRoots.current.clear();
+                setWidgets([]);
+
+                const savedLayout: SavedLayout = JSON.parse(savedLayoutStr);
+
+                // Füge jedes Widget einzeln hinzu
+                savedLayout.widgets.forEach(widget => {
+                    const widgetElement = document.createElement('div');
+                    widgetElement.className = 'grid-stack-item';
+                    widgetElement.setAttribute('data-widget-id', widget.widgetID.toString());
+
+                    // Setze die Position und Größe
+                    if (widget.x !== undefined) widgetElement.setAttribute('gs-x', widget.x.toString());
+                    if (widget.y !== undefined) widgetElement.setAttribute('gs-y', widget.y.toString());
+                    if (widget.w !== undefined) widgetElement.setAttribute('gs-w', widget.w.toString());
+                    if (widget.h !== undefined) widgetElement.setAttribute('gs-h', widget.h.toString());
+
+                    const contentElement = document.createElement('div');
+                    contentElement.className = 'grid-stack-item-content';
+                    widgetElement.appendChild(contentElement);
+
+                    const root = createRoot(contentElement);
+                    widgetRoots.current.set(widget.widgetID, root);
+
+                    // Hier ist gridRef.current garantiert nicht null
+                    gridRef.current!.makeWidget(widgetElement);
+
+                    setWidgets(prev => [...prev, {
+                        widgetID: widget.widgetID,
+                        widgetType: widget.widgetType,
+                        CANID: widget.CANID,
+                        signalID: widget.signalID
+                    }]);
+
+                    setCount(prev => Math.max(prev, widget.widgetID + 1));
+                });
+
+                setShouldLoadAllWidgets(false);
+            } catch (error) {
+                console.error('Fehler beim Laden des Layouts:', error);
+            }
+        }
+    }, [shouldLoadAllWidgets]);
+
     const addNewWidget = (type: string, CANID: number, signalID: number) => {
         if (!gridRef.current) return;
 
@@ -207,6 +334,10 @@ export default function GridStackComponent({
         widgetElement.setAttribute('data-widget-id', widgetId.toString());
         switch (type) {
             case "Table":
+                widgetElement.setAttribute('gs-w', '6');
+                widgetElement.setAttribute('gs-h', '4');
+                break;
+            case "FilteredTable":
                 widgetElement.setAttribute('gs-w', '6');
                 widgetElement.setAttribute('gs-h', '4');
                 break;
@@ -223,6 +354,14 @@ export default function GridStackComponent({
                 widgetElement.setAttribute('gs-h', '2');
                 break;
             case "Gauge":
+                widgetElement.setAttribute('gs-w', '3');
+                widgetElement.setAttribute('gs-h', '4');
+                break;
+            case "LineChart":
+                widgetElement.setAttribute('gs-w', '4');
+                widgetElement.setAttribute('gs-h', '5');
+                break;
+            case "Signals":
                 widgetElement.setAttribute('gs-w', '3');
                 widgetElement.setAttribute('gs-h', '4');
                 break;

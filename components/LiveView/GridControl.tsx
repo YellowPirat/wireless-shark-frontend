@@ -8,9 +8,21 @@ interface GridControlProps {
     wantLiveUpdate: boolean;
     setShouldClearMessages: (value: boolean) => void;
     setWantLiveUpdate: (value: boolean) => void;
+    setShouldRemoveAllWidgets: (value: boolean) => void;
+    setShouldSaveAllWidgets: (value: boolean) => void;
+    setShouldLoadAllWidgets: (value: boolean) => void;
 }
 
-export default function GridControl({isWSConnected, setShouldWSReconnect, wantLiveUpdate, setShouldClearMessages, setWantLiveUpdate}: GridControlProps) {
+export default function GridControl({
+                                        isWSConnected,
+                                        setShouldWSReconnect,
+                                        wantLiveUpdate,
+                                        setShouldClearMessages,
+                                        setWantLiveUpdate,
+                                        setShouldRemoveAllWidgets,
+                                        setShouldSaveAllWidgets,
+                                        setShouldLoadAllWidgets
+                                    }: GridControlProps) {
     return (
         <div>
             <h3 className="text-lg font-semibold mb-2">Grid Control</h3>
@@ -21,6 +33,9 @@ export default function GridControl({isWSConnected, setShouldWSReconnect, wantLi
                          setShouldWSReconnect={setShouldWSReconnect}
                          setWantLiveUpdate={setWantLiveUpdate}
                          setShouldClearMessages={setShouldClearMessages}
+                         setShouldRemoveAllWidgets={setShouldRemoveAllWidgets}
+                         setShouldSaveAllWidgets={setShouldSaveAllWidgets}
+                         setShouldLoadAllWidgets={setShouldLoadAllWidgets}
             />
         </div>
     )

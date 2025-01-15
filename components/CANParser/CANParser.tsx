@@ -58,18 +58,20 @@ export class CANParser {
         const startByte = Math.floor(signal.startBit / 8);
         const bitOffset = signal.startBit % 8;
 
-        // Für 32-Bit Signale direktes Byte-Lesen verwenden
+        // Für 32-Bit Signale
         if (signal.length === 32 && bitOffset === 0) {
             let value = 0;
-            for (let i = 0; i < 4; i++) {
-                if (startByte + i < data.length) {
-                    value |= data[startByte + i] << (i * 8);
-                }
+            // Bytes in der richtigen Reihenfolge lesen (Little Endian: DCBA)
+            if (startByte + 3 < data.length) {
+                value = (data[startByte + 3] << 24) |
+                    (data[startByte + 2] << 16) |
+                    (data[startByte + 1] << 8) |
+                    data[startByte];
             }
 
             // Vorzeichenbehandlung für 32-Bit
             if (signal.isSigned && (value & 0x80000000)) {
-                value = value - 0x100000000;
+                value = value | 0; // Konvertiert zu signed 32-bit integer
             }
             return value;
         }
@@ -100,19 +102,20 @@ export class CANParser {
         const startByte = Math.floor(signal.startBit / 8);
         const bitOffset = 7 - (signal.startBit % 8);
 
-        // Spezielle Behandlung für 32-Bit Signale
+        // Für 32-Bit Signale
         if (signal.length === 32 && bitOffset === 7) {
             let value = 0;
-            // Bei Motorola werden die Bytes in umgekehrter Reihenfolge gelesen
-            for (let i = 0; i < 4; i++) {
-                if (startByte - i >= 0 && startByte - i < data.length) {
-                    value |= data[startByte - i] << (i * 8);
-                }
+            // Bei Motorola werden die Bytes in Big-Endian Reihenfolge gelesen (ABCD)
+            if (startByte >= 3) {
+                value = (data[startByte - 3] << 24) |
+                    (data[startByte - 2] << 16) |
+                    (data[startByte - 1] << 8) |
+                    data[startByte];
             }
 
             // Vorzeichenbehandlung für 32-Bit
             if (signal.isSigned && (value & 0x80000000)) {
-                value = value - 0x100000000;
+                value = value | 0; // Konvertiert zu signed 32-bit integer
             }
             return value;
         }
@@ -143,9 +146,9 @@ export class CANParser {
         let rawValue: number;
 
         // Wähle die entsprechende Extraktionsmethode basierend auf der Byte-Reihenfolge
-        if (signal.byteOrder === 1) { // Intel (LSB)
+        if (signal.byteOrder === 1) { // Intel (LSB) Little Endian
             rawValue = this.extractSignalIntel(data, signal);
-        } else { // Motorola (MSB)
+        } else { // Motorola (MSB) Big Endian
             rawValue = this.extractSignalMotorola(data, signal);
         }
 
@@ -153,9 +156,9 @@ export class CANParser {
         const value = rawValue * signal.factor + signal.offset;
 
         // Wertebegrenzung, falls minimum und maximum definiert sind
-        if (typeof signal.minimum === 'number' && typeof signal.maximum === 'number') {
-            return Math.min(Math.max(value, signal.minimum), signal.maximum);
-        }
+        //if (typeof signal.minimum === 'number' && typeof signal.maximum === 'number') {
+        //    return Math.min(Math.max(value, signal.minimum), signal.maximum);
+        //}
 
         return value;
     }
