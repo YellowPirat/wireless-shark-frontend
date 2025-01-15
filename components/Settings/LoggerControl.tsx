@@ -2,73 +2,44 @@
 
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Play, Square, Save } from "lucide-react";
+import { Play, Square, Save, Plus, Trash2} from "lucide-react";
 
 interface CANAssignment {
-  canSocket: string;
-  dbcFile: string;
-  yamlFile: string;
+  CANSocket: string;
+  DBCFile: string;
+  YAMLFile: string;
 }
 
-export function LoggerControl() {
+
+interface Props {
+  availableFiles: string[];
+  setAvailableFiles: React.Dispatch<React.SetStateAction<string[]>>;
+  fetchFiles: () => Promise<void>;
+}
+
+export function LoggerControl({ availableFiles, setAvailableFiles, fetchFiles }: Props) {
   const [loggerStatus, setLoggerStatus] = useState<string>(""); // Logger-Status
   const [assignments, setAssignments] = useState<CANAssignment[]>([]); // CAN-Zuweisungen
-  const [availableFiles, setAvailableFiles] = useState<string[]>([]); // Verfügbare Dateien
   const [selectedCanSocket, setSelectedCanSocket] = useState<string | null>(null); // Aktueller CAN-Socket
 
   // Dateien und Zuweisungen laden
   useEffect(() => {
-    // Verfügbare Dateien abrufen
-    fetch("http://localhost:8080/logger/configs")
-      .then((res) => res.json())
-      .then((data) => setAvailableFiles(data))
-      .catch((err) => console.error("Fehler beim Abrufen der Dateien:", err));
-
-    // Bestehende Zuweisungen abrufen
-    fetch("http://localhost:8080/assignments")
-      .then((res) => res.json())
-      .then((data) => setAssignments(data))
-      .catch((err) => console.error("Fehler beim Abrufen der Zuweisungen:", err));
+    fetchFiles();
+    fetchAssignments();
   }, []);
 
-  // Logger starten
-  const handleStartLogger = async () => {
-    if (!selectedCanSocket) {
-      setLoggerStatus("Bitte wählen Sie einen CAN-Socket aus.");
-      return;
-    }
-
-    const selectedAssignment = assignments.find((a) => a.canSocket === selectedCanSocket);
-    if (!selectedAssignment || !selectedAssignment.dbcFile || !selectedAssignment.yamlFile) {
-      setLoggerStatus("Bitte wählen Sie DBC- und YAML-Dateien für den ausgewählten CAN-Socket aus.");
-      return;
-    }
-
+  // Zuweisungen vom Server holen
+  const fetchAssignments = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/logger/start?config=${selectedAssignment.yamlFile}`, {
-        method: "POST",
-      });
+      const response = await fetch("http://localhost:8080/assignments");
       if (response.ok) {
-        setLoggerStatus("Logger gestartet");
+        const files = await response.json();
+        setAssignments(files); // Setze die erhaltenen Dateien in den State
       } else {
-        setLoggerStatus("Fehler beim Starten des Loggers");
+        console.error("Fehler beim Abrufen der Dateien");
       }
     } catch (error) {
-      setLoggerStatus(`Netzwerkfehler: ${(error as Error).message}`);
-    }
-  };
-
-  // Logger stoppen
-  const handleStopLogger = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/logger/stop", { method: "POST" });
-      if (response.ok) {
-        setLoggerStatus("Logger gestoppt");
-      } else {
-        setLoggerStatus("Fehler beim Stoppen des Loggers");
-      }
-    } catch (error) {
-      setLoggerStatus(`Netzwerkfehler: ${(error as Error).message}`);
+      console.error("Netzwerkfehler:", error);
     }
   };
 
@@ -96,14 +67,79 @@ export function LoggerControl() {
     setAssignments(updatedAssignments);
   };
 
+  const handleAddAssignment = () => {
+    setAssignments((prevAssignments) => [
+      ...prevAssignments,
+      { CANSocket: "", DBCFile: "", YAMLFile: "" }, // Verwende die korrekten Schlüssel
+    ]);
+  };
+  
+  const deleteAssignment = async (index: number) => {
+    try {
+      // Lösche die entsprechende Zeile im Backend
+      const response = await fetch(`http://localhost:8080/assignments/${index}`, { method: "DELETE" });
+      if (response.ok) {
+        // Entferne die Zeile im Frontend
+        setAssignments((prev) => prev.filter((_, i) => i !== index));
+        alert("Zuweisung erfolgreich gelöscht!");
+      } else {
+        alert("Fehler beim Löschen der Zuweisung");
+      }
+    } catch (error) {
+      console.error("Netzwerkfehler beim Löschen:", error);
+    }
+  };
+
+
+  // Logger starten
+  const handleStartLogger = async () => {
+    if (!selectedCanSocket) {
+      setLoggerStatus("Bitte wählen Sie einen CAN-Socket aus.");
+      return;
+    }
+
+    const selectedAssignment = assignments.find((a) => a.CANSocket === selectedCanSocket);
+    if (!selectedAssignment || !selectedAssignment.DBCFile || !selectedAssignment.YAMLFile) {
+      setLoggerStatus("Bitte wählen Sie DBC- und YAML-Dateien für den ausgewählten CAN-Socket aus.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8080/logger/start?yaml=${selectedAssignment.yamlFile}`, {
+        method: "POST",
+      });
+      if (response.ok) {
+        setLoggerStatus("Logger gestartet");
+      } else {
+        setLoggerStatus("Fehler beim Starten des Loggers");
+      }
+    } catch (error) {
+      setLoggerStatus(`Netzwerkfehler: ${(error as Error).message}`);
+    }
+  };
+
+  // Logger stoppen
+  const handleStopLogger = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/logger/stop", { method: "POST" });
+      if (response.ok) {
+        setLoggerStatus("Logger gestoppt");
+      } else {
+        setLoggerStatus("Fehler beim Stoppen des Loggers");
+      }
+    } catch (error) {
+      setLoggerStatus(`Netzwerkfehler: ${(error as Error).message}`);
+    }
+  };
+
   return (
-    <div className="p-4 bg-gray-100 rounded-md shadow-md">
+    <div className="p-4 w-100 rounded-lg shadow-lg ">
       <h2 className="text-xl font-bold mb-4">Logger Steuerung</h2>
 
       {/* Tabelle zur Zuweisung */}
       <table className="table-auto w-full border-collapse border border-gray-300 mb-4">
         <thead>
-          <tr className="bg-gray-200">
+          <tr className="bg-gray-200 rounded">
             <th className="border border-gray-300 px-4 py-2">CAN-Socket</th>
             <th className="border border-gray-300 px-4 py-2">DBC-Datei</th>
             <th className="border border-gray-300 px-4 py-2">YAML-Datei</th>
@@ -115,15 +151,15 @@ export function LoggerControl() {
               <td className="border border-gray-300 px-4 py-2">
                 <input
                   type="text"
-                  value={assignment.canSocket}
-                  onChange={(e) => updateAssignment(index, "canSocket", e.target.value)}
+                  value={assignment.CANSocket}
+                  onChange={(e) => updateAssignment(index, "CANSocket", e.target.value)}
                   className="w-full p-1 border border-gray-300 rounded"
                 />
               </td>
               <td className="border border-gray-300 px-4 py-2">
                 <select
-                  value={assignment.dbcFile}
-                  onChange={(e) => updateAssignment(index, "dbcFile", e.target.value)}
+                  value={assignment.DBCFile}
+                  onChange={(e) => updateAssignment(index, "DBCFile", e.target.value)}
                   className="w-full p-1 border border-gray-300 rounded"
                 >
                   <option value="">Wählen...</option>
@@ -136,8 +172,8 @@ export function LoggerControl() {
               </td>
               <td className="border border-gray-300 px-4 py-2">
                 <select
-                  value={assignment.yamlFile}
-                  onChange={(e) => updateAssignment(index, "yamlFile", e.target.value)}
+                  value={assignment.YAMLFile}
+                  onChange={(e) => updateAssignment(index, "YAMLFile", e.target.value)}
                   className="w-full p-1 border border-gray-300 rounded"
                 >
                   <option value="">Wählen...</option>
@@ -148,10 +184,28 @@ export function LoggerControl() {
                   ))}
                 </select>
               </td>
+              <td className="border border-gray-300 px-4 py-2 text-center">
+            <button
+              onClick={() => deleteAssignment(index)}
+              className="text-red-500 hover:text-red-700"
+              title="Löschen"
+            >
+              <Trash2 className="h-5 w-5" />
+            </button>
+          </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Zeile hinzufügen */}
+      <Button
+        type="button"
+        onClick={handleAddAssignment}
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4"
+      >
+        <Plus className="h-5 w-5 inline-block mr-2" /> Neue Zeile hinzufügen
+      </Button>
 
       {/* Aktionen */}
       <div className="flex space-x-4">

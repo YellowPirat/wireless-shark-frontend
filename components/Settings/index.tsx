@@ -1,16 +1,15 @@
-// index.tsx
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import Sidebar from "@/components/LiveView/Sidebar";
+import   Sidebar   from "@/components/LiveView/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Folder } from "lucide-react";
 import { LoggerControl } from "@/components/Settings/LoggerControl";
 
-export default function Settings() {
+export default function UploadData() {
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<string>("");
-  const [configFiles, setConfigFiles] = useState<string[]>([]); // Zustand für die Config-Dateien
+  const [availableFiles, setAvailableFiles] = useState<string[]>([]); // Verfügbare Dateien
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +41,7 @@ export default function Settings() {
 
       if (response.ok) {
         setStatus("Datei erfolgreich hochgeladen");
-        fetchConfigFiles(); // Nach dem Hochladen Config-Dateien abrufen
+        fetchFiles();
       } else {
         setStatus("Fehler beim Hochladen der Datei");
       }
@@ -52,28 +51,26 @@ export default function Settings() {
   };
 
   // Config-Dateien vom Backend abrufen
-  const fetchConfigFiles = async () => {
+  const fetchFiles = async () => {
     try {
-      const response = await fetch("http://localhost:8080/logger/configs");
+      const response = await fetch("http://localhost:8080/logger/files");
       if (response.ok) {
         const files = await response.json();
-        setConfigFiles(files); // Setze die erhaltenen Dateien in den State
+        setAvailableFiles(files); // Setze die erhaltenen Dateien in den State
       } else {
-        console.error("Fehler beim Abrufen der Config-Dateien");
+        console.error("Fehler beim Abrufen der Dateien");
       }
     } catch (error) {
       console.error("Netzwerkfehler:", error);
     }
   };
 
-  useEffect(() => {
-    fetchConfigFiles(); // Beim ersten Laden die Config-Dateien holen
-  }, []);
 
   return (
     <div className="flex h-screen">
       {/* Sidebar links */}
-      <Sidebar />
+      <Sidebar >
+      </Sidebar>
 
       {/* Hauptinhalt rechts neben der Sidebar */}
       <main className="p-6 flex-1">
@@ -115,7 +112,7 @@ export default function Settings() {
 
         {/* LoggerControl unterhalb der Upload-Section */}
         <div className="mt-8">
-          <LoggerControl configFiles={configFiles} setConfigFiles={setConfigFiles} />
+          <LoggerControl availableFiles={availableFiles} setAvailableFiles={setAvailableFiles} fetchFiles={fetchFiles}  />
         </div>
       </main>
     </div>
