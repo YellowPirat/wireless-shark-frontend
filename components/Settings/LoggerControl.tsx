@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Play, Square, Save, Plus, Trash2} from "lucide-react";
+import { Play, Square, Save, Plus, Trash2 } from "lucide-react";
 
 interface CANAssignment {
   CANSocket: string;
@@ -19,11 +19,11 @@ interface Props {
 export function LoggerControl({ availableFiles, setAvailableFiles, fetchFiles }: Props) {
   const [loggerStatus, setLoggerStatus] = useState<string>(""); // Logger-Status
   const [assignments, setAssignments] = useState<CANAssignment[]>([]); // CAN-Zuweisungen
-  const [selectedCanSocket, setSelectedCanSocket] = useState<string | null>(null); // Aktueller CAN-Socket
-useEffect(() => {
-  fetchAssignments();
-  fetchFiles();
-}, [])
+
+  useEffect(() => {
+    fetchAssignments();
+    fetchFiles();
+  }, []);
 
   // Zuweisungen vom Server holen
   const fetchAssignments = async () => {
@@ -67,10 +67,10 @@ useEffect(() => {
   const handleAddAssignment = () => {
     setAssignments((prevAssignments) => [
       ...prevAssignments,
-      { CANSocket: "", DBCFile: "", YAMLFile: "" }, // Verwende die korrekten Schlüssel
+      { CANSocket: "", DBCFile: "", YAMLFile: "" },
     ]);
   };
-  
+
   const deleteAssignment = async (index: number) => {
     try {
       // Lösche die entsprechende Zeile im Backend
@@ -87,26 +87,20 @@ useEffect(() => {
     }
   };
 
-
-  // Logger starten
-  const handleStartLogger = async () => {
-    if (!selectedCanSocket) {
-      setLoggerStatus("Bitte wählen Sie einen CAN-Socket aus.");
-      return;
-    }
-
-    const selectedAssignment = assignments.find((a) => a.CANSocket === selectedCanSocket);
-    if (!selectedAssignment || !selectedAssignment.DBCFile || !selectedAssignment.YAMLFile) {
-      setLoggerStatus("Bitte wählen Sie DBC- und YAML-Dateien für den ausgewählten CAN-Socket aus.");
+  // Logger für eine Zeile starten
+  const handleStartLogger = async (index: number) => {
+    const selectedAssignment = assignments[index];
+    if (!selectedAssignment.DBCFile || !selectedAssignment.YAMLFile) {
+      setLoggerStatus("Bitte wählen Sie DBC- und YAML-Dateien für den ausgewählten Eintrag aus.");
       return;
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/logger/start?yaml=${selectedAssignment.yamlFile}`, {
+      const response = await fetch(`http://localhost:8080/logger/start?yaml=${selectedAssignment.YAMLFile}`, {
         method: "POST",
       });
       if (response.ok) {
-        setLoggerStatus("Logger gestartet");
+        setLoggerStatus(`Logger für Zeile ${index + 1} gestartet`);
       } else {
         setLoggerStatus("Fehler beim Starten des Loggers");
       }
@@ -115,12 +109,14 @@ useEffect(() => {
     }
   };
 
-  // Logger stoppen
-  const handleStopLogger = async () => {
+  // Logger für eine Zeile stoppen
+  const handleStopLogger = async (index: number) => {
+    const selectedAssignment = assignments[index];
+
     try {
       const response = await fetch("http://localhost:8080/logger/stop", { method: "POST" });
       if (response.ok) {
-        setLoggerStatus("Logger gestoppt");
+        setLoggerStatus(`Logger für Zeile ${index + 1} gestoppt`);
       } else {
         setLoggerStatus("Fehler beim Stoppen des Loggers");
       }
@@ -140,6 +136,7 @@ useEffect(() => {
             <th className="border border-gray-300 px-4 py-2">CAN-Socket</th>
             <th className="border border-gray-300 px-4 py-2">DBC-Datei</th>
             <th className="border border-gray-300 px-4 py-2">YAML-Datei</th>
+            <th className="border border-gray-300 px-4 py-2">Aktionen</th>
           </tr>
         </thead>
         <tbody>
@@ -152,7 +149,7 @@ useEffect(() => {
                   onChange={(e) => updateAssignment(index, "CANSocket", e.target.value)}
                   className="w-full p-1 border border-gray-300 rounded"
                 />
-              </td>
+                </td>
               <td className="border border-gray-300 px-4 py-2">
                 <select
                   value={assignment.DBCFile}
@@ -182,14 +179,28 @@ useEffect(() => {
                 </select>
               </td>
               <td className="border border-gray-300 px-4 py-2 text-center">
-            <button
-              onClick={() => deleteAssignment(index)}
-              className="text-red-500 hover:text-red-700"
-              title="Löschen"
-            >
-              <Trash2 className="h-5 w-5" />
-            </button>
-          </td>
+                <button
+                  onClick={() => handleStartLogger(index)}
+                  className="text-blue-500 hover:text-blue-700"
+                  title="Start Logger"
+                >
+                  <Play className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => handleStopLogger(index)}
+                  className="text-red-500 hover:text-red-700 ml-2"
+                  title="Stop Logger"
+                >
+                  <Square className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => deleteAssignment(index)}
+                  className="text-red-500 hover:text-red-700 ml-2"
+                  title="Löschen"
+                >
+                  <Trash2 className="h-5 w-5" />
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -201,25 +212,11 @@ useEffect(() => {
         onClick={handleAddAssignment}
         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4"
       >
-        <Plus className="h-5 w-5 inline-block mr-2" /> Neue Zeile hinzufügen
+        <Plus className="h-5 w-5 inline-block mr-2" /> Neue Zuweisung
       </Button>
 
       {/* Aktionen */}
       <div className="flex space-x-4">
-        <Button
-          type="button"
-          onClick={handleStartLogger}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          <Play className="h-5 w-5" />
-        </Button>
-        <Button
-          type="button"
-          onClick={handleStopLogger}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-        >
-          <Square className="h-5 w-5" />
-        </Button>
         <Button
           type="button"
           onClick={handleSaveAssignments}
