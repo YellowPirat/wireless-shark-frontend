@@ -28,7 +28,7 @@ export function LoggerControl({ availableFiles, setAvailableFiles, fetchFiles }:
   // Zuweisungen vom Server holen
   const fetchAssignments = async () => {
     try {
-      const response = await fetch("http://localhost:8080/assignments");
+      const response = await fetch('/assignments');
       if (response.ok) {
         const files = await response.json();
         setAssignments(files); // Setze die erhaltenen Dateien in den State
@@ -42,7 +42,7 @@ export function LoggerControl({ availableFiles, setAvailableFiles, fetchFiles }:
 
   // Zuweisungen speichern
   const handleSaveAssignments = () => {
-    fetch("http://localhost:8080/assignments", {
+    fetch('/assignments', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(assignments),
@@ -74,7 +74,7 @@ export function LoggerControl({ availableFiles, setAvailableFiles, fetchFiles }:
   const deleteAssignment = async (index: number) => {
     try {
       // Lösche die entsprechende Zeile im Backend
-      const response = await fetch(`http://localhost:8080/assignments/${index}`, { method: "DELETE" });
+      const response = await fetch(`/assignments/${index}`, { method: "DELETE" });
       if (response.ok) {
         // Entferne die Zeile im Frontend
         setAssignments((prev) => prev.filter((_, i) => i !== index));
@@ -96,7 +96,7 @@ export function LoggerControl({ availableFiles, setAvailableFiles, fetchFiles }:
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/logger/start?yaml=${selectedAssignment.YAMLFile}`, {
+      const response = await fetch(`/logger/start?yaml=${selectedAssignment.YAMLFile}`, {
         method: "POST",
       });
       if (response.ok) {
@@ -114,7 +114,7 @@ export function LoggerControl({ availableFiles, setAvailableFiles, fetchFiles }:
     const selectedAssignment = assignments[index];
 
     try {
-      const response = await fetch("http://localhost:8080/logger/stop", { method: "POST" });
+      const response = await fetch("/logger/stop", { method: "POST" });
       if (response.ok) {
         setLoggerStatus(`Logger für Zeile ${index + 1} gestoppt`);
       } else {

@@ -42,7 +42,7 @@ export function DataUpload({fetchFiles}: Props) {
       formData.append("file", file);
   
       try {
-        const response = await fetch("http://localhost:8080/upload", {
+        const response = await fetch("/upload", {
           method: "POST",
           body: formData,
         });

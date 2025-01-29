@@ -14,7 +14,7 @@ export default function Settings() {
   // Config-Dateien vom Backend abrufen
   const fetchFiles = async () => {
     try {
-      const response = await fetch("http://localhost:8080/logger/files");
+      const response = await fetch("/logger/files");
       if (response.ok) {
         const files = await response.json();
         setAvailableFiles(files); // Setze die erhaltenen Dateien in den State

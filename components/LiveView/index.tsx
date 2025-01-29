@@ -10,31 +10,8 @@ interface LiveViewProps {
     canSocket: string;
 }
 
-const fetchDBCFileName = async () => {
-    const pathname = usePathname(); // Holen der aktuellen URL (Pathname)
-    const canSocket = pathname.split('/').pop(); // Extrahieren des CANSocket aus der URL
-
-    try {
-        const response = await fetch("http//localhost:8080/assignments"); // Pfad zu deiner JSON-Datei
-        const jsonData = await response.json();
-        
-        // Suchen des DBCFile für den extrahierten CANSocket
-        const item = jsonData.find((data: any) => data.CANSocket === canSocket);
-        
-        if (item) {
-            return item.DBCFile; // Rückgabe des DBCFile-Namens
-        } else {
-            console.warn(`Kein DBCFile für CANSocket ${canSocket} gefunden.`);
-            return null; // Rückgabe null, falls kein passendes DBCFile gefunden wurde
-        }
-    } catch (error) {
-        console.error('Fehler beim Laden der JSON-Datei:', error);
-        return null; // Rückgabe null im Fehlerfall
-    }
-};
-
-
 export default function LiveView({ canSocket }: LiveViewProps) {
+    const pathname = usePathname(); // Hook wird direkt in der Komponente aufgerufen
     const [mounted, setMounted] = useState(false);
     const [dbcData, setDbcData] = useState<DBCData | null>(null);
     const [isWSConnected, setIsWSConnected] = useState(false);
@@ -45,6 +22,27 @@ export default function LiveView({ canSocket }: LiveViewProps) {
     const [shouldRemoveAllWidgets, setShouldRemoveAllWidgets] = useState(false);
     const [shouldSaveAllWidgets, setShouldSaveAllWidgets] = useState(false);
     const [shouldLoadAllWidgets, setShouldLoadAllWidgets] = useState(false);
+
+    // Funktion ist jetzt innerhalb der Komponente und hat Zugriff auf pathname
+    const fetchDBCFileName = async () => {
+        const extractedCanSocket = canSocket;
+
+        try {
+            const response = await fetch("/assignments");
+            const jsonData = await response.json();
+            const item = jsonData.find((data: any) => data.CANSocket === extractedCanSocket);
+
+            if (item) {
+                return item.DBCFile;
+            } else {
+                console.warn(`Kein DBCFile für CANSocket ${extractedCanSocket} gefunden.`);
+                return null;
+            }
+        } catch (error) {
+            console.error('Fehler beim Laden der JSON-Datei:', error);
+            return null;
+        }
+    };
 
     useEffect(() => {
         setMounted(true);
@@ -62,7 +60,7 @@ export default function LiveView({ canSocket }: LiveViewProps) {
             }
         };
         fetchDBC();
-    }, []);
+    }, [pathname]); // pathname als Dependency hinzugefügt
 
     if (!mounted) {
         return null;
