@@ -9,13 +9,7 @@ export default function Page({
 }
 
 export async function generateStaticParams() {
-    //HARDCODED!
-    return [
-        { id: 'can0' },
-        { id: 'can1' },
-        { id: 'can2' },
-        { id: 'can3' },
-        { id: 'can4' },
-        { id: 'can5' }
-    ]
+    const response = await fetch("http://localhost:8080/assignments"); // JSON mit CAN-Sockets abrufen
+    const jsonData = await response.json();
+    return jsonData.map((item: any) => ({ id: item.CANSocket }));
 }

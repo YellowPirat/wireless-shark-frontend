@@ -14,25 +14,29 @@ import {
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
-const canItems = [
-    { href: '/live-view/can0', text: 'CAN 0' },
-    { href: '/live-view/can1', text: 'CAN 1' },
-    { href: '/live-view/can2', text: 'CAN 2' },
-    { href: '/live-view/can3', text: 'CAN 3' },
-    { href: '/live-view/can4', text: 'CAN 4' },
-    { href: '/live-view/can5', text: 'CAN 5' },
-];
-
 export default function Navbar() {
     const [mounted, setMounted] = useState(false);
+    const [canItems, setCanItems] = useState<{ href: string, text: string }[]>([]);
     const pathname = usePathname();
+
+    // Fetch CAN data when the component mounts
+    useEffect(() => {
+        async function fetchCanData() {
+            const response = await fetch("http://localhost:8080/assignments"); // API mit CAN-Sockets
+            const jsonData = await response.json();
+            const items = jsonData.map((item: any) => ({
+                href: `/live-view/${item.CANSocket}`,
+                text: item.CANSocket
+            }));
+            setCanItems(items); // Setze die CAN-Sockets
+        }
+
+        fetchCanData();
+        setMounted(true);
+    }, []);
 
     // Get current CAN from pathname
     const currentCAN = canItems.find(item => item.href === pathname)?.text || 'Live View';
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     return (
         <div className="w-full max-w-full flex justify-between px-4 py-2 bg-gray-50 border-b">

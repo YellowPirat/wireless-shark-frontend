@@ -4,10 +4,35 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import GridView from './GridView';
 import { loadDBCFile, DBCData } from '@/components/DBCParser/DBCParser';
+import { usePathname } from 'next/navigation';
 
 interface LiveViewProps {
     canSocket: string;
 }
+
+const fetchDBCFileName = async () => {
+    const pathname = usePathname(); // Holen der aktuellen URL (Pathname)
+    const canSocket = pathname.split('/').pop(); // Extrahieren des CANSocket aus der URL
+
+    try {
+        const response = await fetch("http//localhost:8080/assignments"); // Pfad zu deiner JSON-Datei
+        const jsonData = await response.json();
+        
+        // Suchen des DBCFile für den extrahierten CANSocket
+        const item = jsonData.find((data: any) => data.CANSocket === canSocket);
+        
+        if (item) {
+            return item.DBCFile; // Rückgabe des DBCFile-Namens
+        } else {
+            console.warn(`Kein DBCFile für CANSocket ${canSocket} gefunden.`);
+            return null; // Rückgabe null, falls kein passendes DBCFile gefunden wurde
+        }
+    } catch (error) {
+        console.error('Fehler beim Laden der JSON-Datei:', error);
+        return null; // Rückgabe null im Fehlerfall
+    }
+};
+
 
 export default function LiveView({ canSocket }: LiveViewProps) {
     const [mounted, setMounted] = useState(false);
@@ -25,9 +50,12 @@ export default function LiveView({ canSocket }: LiveViewProps) {
         setMounted(true);
         const fetchDBC = async () => {
             try {
-                const data = await loadDBCFile('/api/dbc/CAN3_UASA2310_Vehicle_mitnode.dbc');
-                if (data) {
-                    setDbcData(data);
+                const dbcFileName = await fetchDBCFileName();
+                if (dbcFileName) {
+                    const data = await loadDBCFile(`/api/dbc/${dbcFileName}`);
+                    if (data) {
+                        setDbcData(data);
+                    }
                 }
             } catch (err) {
                 console.log(err);
