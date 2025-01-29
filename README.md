@@ -34,6 +34,9 @@ A modern web-based application for real-time CAN bus data logging and visualizat
 
 ### Installation
 
+#### Precompiled releases
+There are precompiled releases under the release page avaiable. https://github.com/YellowPirat/wireless-shark-frontend/releases
+
 1. Clone the repository
 ```
 git clone git@github.com:YellowPirat/wireless-shark-frontend.git
