@@ -88,7 +88,7 @@ export default function Navbar() {
                         Yellow Pirat
                     </div>
                     <div className="font-bold text-right text-xl px-4 py-2">
-                        CAN Datenlogger
+                        CAN Datalogger
                     </div>
                 </>
             ) : (
