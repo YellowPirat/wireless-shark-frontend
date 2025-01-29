@@ -76,7 +76,7 @@ const Row = memo(({ data, index, style }: RowProps) => {
                                 {signal.value.toFixed(2)} {signal.unit}
                             </div>
                         ))
-                        : <span className="text-gray-500">Keine DBC-Daten verfügbar</span>}
+                        : <span className="text-gray-500">No DBC-Data avaiable</span>}
                 </div>
             </div>
         </div>
@@ -90,7 +90,7 @@ const TableHeader = memo(() => (
         <div className="w-24 p-2 font-medium text-muted-foreground">CAN ID</div>
         <div className="w-32 p-2 font-medium text-muted-foreground">Timestamp</div>
         <div className="w-48 p-2 font-medium text-muted-foreground">Payload</div>
-        <div className="flex-1 p-2 font-medium text-muted-foreground">Interpretiert</div>
+        <div className="flex-1 p-2 font-medium text-muted-foreground">Interpreted</div>
     </div>
 ));
 
