@@ -19,24 +19,27 @@ export default function Navbar() {
     const [canItems, setCanItems] = useState<{ href: string, text: string }[]>([]);
     const pathname = usePathname();
 
-    // Fetch CAN data when the component mounts
     useEffect(() => {
         async function fetchCanData() {
-            const response = await fetch("http://localhost:8080/assignments"); // API mit CAN-Sockets
+            const response = await fetch("/assignments");
             const jsonData = await response.json();
             const items = jsonData.map((item: any) => ({
-                href: `/live-view/${item.CANSocket}`,
+                href: `/live-view#${item.CANSocket}`,
                 text: item.CANSocket
             }));
-            setCanItems(items); // Setze die CAN-Sockets
+            setCanItems(items);
         }
 
         fetchCanData();
         setMounted(true);
     }, []);
 
-    // Get current CAN from pathname
     const currentCAN = canItems.find(item => item.href === pathname)?.text || 'Live View';
+
+    const handleCanClick = (href: string) => (e: React.MouseEvent) => {
+        e.preventDefault();
+        window.location.href = href;
+    };
 
     return (
         <div className="w-full max-w-full flex justify-between px-4 py-2 bg-gray-50 border-b">
@@ -51,20 +54,15 @@ export default function Navbar() {
                                 </NavigationMenuTrigger>
                                 <NavigationMenuContent>
                                     {canItems.map((item, index) => (
-                                        <Link
+                                        <NavigationMenuLink
                                             key={index}
-                                            href={item.href}
-                                            legacyBehavior
-                                            passHref
+                                            onClick={handleCanClick(item.href)}
+                                            className={`w-20 block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground cursor-pointer ${
+                                                pathname === item.href ? 'bg-accent text-accent-foreground' : ''
+                                            }`}
                                         >
-                                            <NavigationMenuLink
-                                                className={`w-20 block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground ${
-                                                    pathname === item.href ? 'bg-accent text-accent-foreground' : ''
-                                                }`}
-                                            >
-                                                {item.text}
-                                            </NavigationMenuLink>
-                                        </Link>
+                                            {item.text}
+                                        </NavigationMenuLink>
                                     ))}
                                 </NavigationMenuContent>
                             </NavigationMenuItem>
@@ -98,5 +96,5 @@ export default function Navbar() {
                 </>
             )}
         </div>
-    )
+    );
 }
