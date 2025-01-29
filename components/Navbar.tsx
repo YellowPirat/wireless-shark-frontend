@@ -14,6 +14,12 @@ import {
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
+interface Assignment {
+    CANSocket: string;
+    DBCFile: string;
+    YAMLFile: string;
+}
+
 export default function Navbar() {
     const [mounted, setMounted] = useState(false);
     const [canItems, setCanItems] = useState<{ href: string, text: string }[]>([]);
@@ -23,7 +29,7 @@ export default function Navbar() {
         async function fetchCanData() {
             const response = await fetch("/assignments");
             const jsonData = await response.json();
-            const items = jsonData.map((item: any) => ({
+            const items = jsonData.map((item: Assignment) => ({
                 href: `/live-view#${item.CANSocket}`,
                 text: item.CANSocket
             }));

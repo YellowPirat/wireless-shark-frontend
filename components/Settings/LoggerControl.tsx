@@ -16,7 +16,7 @@ interface Props {
   fetchFiles: () => Promise<void>;
 }
 
-export function LoggerControl({ availableFiles, setAvailableFiles, fetchFiles }: Props) {
+export function LoggerControl({ availableFiles, fetchFiles }: Props) {
   const [loggerStatus, setLoggerStatus] = useState<string>(""); // Logger-Status
   const [assignments, setAssignments] = useState<CANAssignment[]>([]); // CAN-Zuweisungen
 
@@ -111,7 +111,6 @@ export function LoggerControl({ availableFiles, setAvailableFiles, fetchFiles }:
 
   // Logger für eine Zeile stoppen
   const handleStopLogger = async (index: number) => {
-    const selectedAssignment = assignments[index];
 
     try {
       const response = await fetch("/logger/stop", { method: "POST" });

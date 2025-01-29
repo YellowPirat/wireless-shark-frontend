@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import   Sidebar   from "@/components/LiveView/Sidebar";
+import React, { useState } from "react";
 import { LoggerControl } from "@/components/Settings/LoggerControl";
 import { DataUpload } from "./DataUpload";
 import { Card } from "../ui/card";

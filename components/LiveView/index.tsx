@@ -10,6 +10,12 @@ interface LiveViewProps {
     canSocket: string;
 }
 
+interface Assignment {
+    CANSocket: string;
+    DBCFile: string;
+    YAMLFile: string;
+}
+
 export default function LiveView({ canSocket }: LiveViewProps) {
     const pathname = usePathname(); // Hook wird direkt in der Komponente aufgerufen
     const [mounted, setMounted] = useState(false);
@@ -30,7 +36,7 @@ export default function LiveView({ canSocket }: LiveViewProps) {
         try {
             const response = await fetch("/assignments");
             const jsonData = await response.json();
-            const item = jsonData.find((data: any) => data.CANSocket === extractedCanSocket);
+            const item = jsonData.find((data: Assignment) => data.CANSocket === extractedCanSocket);
 
             if (item) {
                 return item.DBCFile;
