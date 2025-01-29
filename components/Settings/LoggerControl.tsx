@@ -17,30 +17,30 @@ interface Props {
 }
 
 export function LoggerControl({ availableFiles, fetchFiles }: Props) {
-  const [loggerStatus, setLoggerStatus] = useState<string>(""); // Logger-Status
-  const [assignments, setAssignments] = useState<CANAssignment[]>([]); // CAN-Zuweisungen
+  const [loggerStatus, setLoggerStatus] = useState<string>(""); // Logger status
+  const [assignments, setAssignments] = useState<CANAssignment[]>([]); // CAN assignments
 
   useEffect(() => {
     fetchAssignments();
     fetchFiles();
   }, []);
 
-  // Zuweisungen vom Server holen
+  // Fetch assignments from the server
   const fetchAssignments = async () => {
     try {
       const response = await fetch('/assignments');
       if (response.ok) {
         const files = await response.json();
-        setAssignments(files); // Setze die erhaltenen Dateien in den State
+        setAssignments(files); // Set the fetched files to state
       } else {
-        console.error("Fehler beim Abrufen der Dateien");
+        console.error("Error fetching files");
       }
     } catch (error) {
-      console.error("Netzwerkfehler:", error);
+      console.error("Network error:", error);
     }
   };
 
-  // Zuweisungen speichern
+  // Save assignments
   const handleSaveAssignments = () => {
     fetch('/assignments', {
       method: "POST",
@@ -49,15 +49,15 @@ export function LoggerControl({ availableFiles, fetchFiles }: Props) {
     })
       .then((res) => {
         if (res.ok) {
-          console.log("Zuweisungen erfolgreich gespeichert!");
+          console.log("Assignments successfully saved!");
         } else {
-          console.log("Fehler beim Speichern der Zuweisungen");
+          console.log("Error saving assignments");
         }
       })
-      .catch((err) => console.error("Fehler beim Speichern:", err));
+      .catch((err) => console.error("Error saving:", err));
   };
 
-  // Zuweisung aktualisieren
+  // Update an assignment
   const updateAssignment = (index: number, field: keyof CANAssignment, value: string) => {
     const updatedAssignments = [...assignments];
     updatedAssignments[index][field] = value;
@@ -73,25 +73,25 @@ export function LoggerControl({ availableFiles, fetchFiles }: Props) {
 
   const deleteAssignment = async (index: number) => {
     try {
-      // Lösche die entsprechende Zeile im Backend
+      // Delete the corresponding row from the backend
       const response = await fetch(`/assignments/${index}`, { method: "DELETE" });
       if (response.ok) {
-        // Entferne die Zeile im Frontend
+        // Remove the row from the frontend
         setAssignments((prev) => prev.filter((_, i) => i !== index));
-        alert("Zuweisung erfolgreich gelöscht!");
+        alert("Assignment successfully deleted!");
       } else {
-        alert("Fehler beim Löschen der Zuweisung");
+        alert("Error deleting assignment");
       }
     } catch (error) {
-      console.error("Netzwerkfehler beim Löschen:", error);
+      console.error("Network error when deleting:", error);
     }
   };
 
-  // Logger für eine Zeile starten
+  // Start logger for a row
   const handleStartLogger = async (index: number) => {
     const selectedAssignment = assignments[index];
     if (!selectedAssignment.DBCFile || !selectedAssignment.YAMLFile) {
-      setLoggerStatus("Bitte wählen Sie DBC- und YAML-Dateien für den ausgewählten Eintrag aus.");
+      setLoggerStatus("Please select DBC and YAML files for the selected entry.");
       return;
     }
 
@@ -100,42 +100,42 @@ export function LoggerControl({ availableFiles, fetchFiles }: Props) {
         method: "POST",
       });
       if (response.ok) {
-        setLoggerStatus(`Logger für Zeile ${index + 1} gestartet`);
+        setLoggerStatus(`Logger for row ${index + 1} started`);
       } else {
-        setLoggerStatus("Fehler beim Starten des Loggers");
+        setLoggerStatus("Error starting logger");
       }
     } catch (error) {
-      setLoggerStatus(`Netzwerkfehler: ${(error as Error).message}`);
+      setLoggerStatus(`Network error: ${(error as Error).message}`);
     }
   };
 
-  // Logger für eine Zeile stoppen
+  // Stop logger for a row
   const handleStopLogger = async (index: number) => {
 
     try {
       const response = await fetch("/logger/stop", { method: "POST" });
       if (response.ok) {
-        setLoggerStatus(`Logger für Zeile ${index + 1} gestoppt`);
+        setLoggerStatus(`Logger for row ${index + 1} stopped`);
       } else {
-        setLoggerStatus("Fehler beim Stoppen des Loggers");
+        setLoggerStatus("Error stopping logger");
       }
     } catch (error) {
-      setLoggerStatus(`Netzwerkfehler: ${(error as Error).message}`);
+      setLoggerStatus(`Network error: ${(error as Error).message}`);
     }
   };
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-4">Logger Steuerung</h2>
+      <h2 className="text-2xl font-semibold mb-4">Logger Control</h2>
 
-      {/* Tabelle zur Zuweisung */}
-      <table className="table-auto w-full border-collapse border border-gray-300 mb-4">
+      {/* Table for assignments */}
+      <table className="table-auto w-full border-collapse border border-gray-300 mb-4 rounded-lg">
         <thead>
           <tr className="bg-gray-200 rounded">
-            <th className="border border-gray-300 px-4 py-2">CAN-Socket</th>
-            <th className="border border-gray-300 px-4 py-2">DBC-Datei</th>
-            <th className="border border-gray-300 px-4 py-2">YAML-Datei</th>
-            <th className="border border-gray-300 px-4 py-2">Aktionen</th>
+            <th className="border border-gray-300 px-4 py-2 w-32">CAN Socket</th>
+            <th className="border border-gray-300 px-4 py-2 w-64">DBC File</th>
+            <th className="border border-gray-300 px-4 py-2 w-64">YAML File</th>
+            <th className="border border-gray-300 px-4 py-2 w-20">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -148,14 +148,14 @@ export function LoggerControl({ availableFiles, fetchFiles }: Props) {
                   onChange={(e) => updateAssignment(index, "CANSocket", e.target.value)}
                   className="w-full p-1 border border-gray-300 rounded"
                 />
-                </td>
+              </td>
               <td className="border border-gray-300 px-4 py-2">
                 <select
                   value={assignment.DBCFile}
                   onChange={(e) => updateAssignment(index, "DBCFile", e.target.value)}
                   className="w-full p-1 border border-gray-300 rounded"
                 >
-                  <option value="">Wählen...</option>
+                  <option value="">Select...</option>
                   {availableFiles.map((file) => (
                     <option key={file} value={file}>
                       {file}
@@ -169,7 +169,7 @@ export function LoggerControl({ availableFiles, fetchFiles }: Props) {
                   onChange={(e) => updateAssignment(index, "YAMLFile", e.target.value)}
                   className="w-full p-1 border border-gray-300 rounded"
                 >
-                  <option value="">Wählen...</option>
+                  <option value="">Select...</option>
                   {availableFiles.map((file) => (
                     <option key={file} value={file}>
                       {file}
@@ -177,55 +177,57 @@ export function LoggerControl({ availableFiles, fetchFiles }: Props) {
                   ))}
                 </select>
               </td>
-              <td className="border border-gray-300 px-4 py-2 text-center">
-                <button
-                  onClick={() => handleStartLogger(index)}
-                  className="text-blue-500 hover:text-blue-700"
-                  title="Start Logger"
-                >
-                  <Play className="h-5 w-5" />
-                </button>
-                <button
-                  onClick={() => handleStopLogger(index)}
-                  className="text-red-500 hover:text-red-700 ml-2"
-                  title="Stop Logger"
-                >
-                  <Square className="h-5 w-5" />
-                </button>
-                <button
-                  onClick={() => deleteAssignment(index)}
-                  className="text-red-500 hover:text-red-700 ml-2"
-                  title="Löschen"
-                >
-                  <Trash2 className="h-5 w-5" />
-                </button>
+              <td className="border border-gray-300 px-4 py-2 text-center w-20">
+                <div className="flex justify-between">
+                  <button
+                    onClick={() => handleStartLogger(index)}
+                    className="text-blue-500 hover:text-blue-700"
+                    title="Start Logger"
+                  >
+                    <Play className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={() => handleStopLogger(index)}
+                    className="text-red-500 hover:text-red-700 ml-2"
+                    title="Stop Logger"
+                  >
+                    <Square className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={() => deleteAssignment(index)}
+                    className="text-red-500 hover:text-red-700 ml-2"
+                    title="Delete"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* Zeile hinzufügen */}
+      {/* Add new assignment */}
       <Button
         type="button"
         onClick={handleAddAssignment}
         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4"
       >
-        <Plus className="h-5 w-5 inline-block mr-2" /> Neue Zuweisung
+        <Plus className="h-5 w-5 inline-block mr-2" /> New Assignment
       </Button>
 
-      {/* Aktionen */}
+      {/* Actions */}
       <div className="flex space-x-4">
         <Button
           type="button"
           onClick={handleSaveAssignments}
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-green-600"
         >
           <Save className="h-5 w-5" />
         </Button>
       </div>
 
-      {/* Logger-Status */}
+      {/* Logger status */}
       <p className="mt-4 text-sm text-gray-600">
         <strong>Status:</strong> {loggerStatus}
       </p>

@@ -18,10 +18,10 @@ export default function Settings() {
         const files = await response.json();
         setAvailableFiles(files); // Setze die erhaltenen Dateien in den State
       } else {
-        console.error("Fehler beim Abrufen der Dateien");
+        console.error("Error while fetching files");
       }
     } catch (error) {
-      console.error("Netzwerkfehler:", error);
+      console.error("Networkerror:", error);
     }
   };
 
