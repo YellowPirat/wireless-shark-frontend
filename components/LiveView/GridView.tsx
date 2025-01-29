@@ -268,14 +268,14 @@ export default function GridStackComponent({
                 widgets: savedWidgets
             };
 
-            localStorage.setItem('savedWidgetLayout', JSON.stringify(layoutToSave));
+            localStorage.setItem('savedWidgetLayout' + canSocket, JSON.stringify(layoutToSave));
             setShouldSaveAllWidgets(false);
         }
     }, [shouldSaveAllWidgets, widgets]);
 
     useEffect(() => {
         if (shouldLoadAllWidgets && gridRef.current) {  // Prüfe gridRef.current direkt in der if-Bedingung
-            const savedLayoutStr = localStorage.getItem('savedWidgetLayout');
+            const savedLayoutStr = localStorage.getItem('savedWidgetLayout' + canSocket);
             if (!savedLayoutStr) return;
 
             try {
