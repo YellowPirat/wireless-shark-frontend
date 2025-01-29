@@ -76,7 +76,7 @@ const Row = memo(({ data, index, style }: RowProps) => {
                                 {signal.value.toFixed(2)} {signal.unit}
                             </div>
                         ))
-                        : <span className="text-gray-500">No DBC-Data avaiable</span>}
+                        : <span className="text-gray-500">No DBC-Data available</span>}
                 </div>
             </div>
         </div>
