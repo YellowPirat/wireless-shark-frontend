@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# wireless-shark-frontend
+
+A modern web-based application for real-time CAN bus data logging and visualization, built with Next.js and TypeScript.
+
+## Features
+
+### Real-time CAN Bus Monitoring
+- Live data capture via WebSocket connection
+- Support for multiple CAN interfaces
+- DBC file integration for signal interpretation
+- Configurable logging parameters
+
+### Dynamic Visualization
+- Customizable dashboard with draggable widgets
+- Multiple visualization types:
+  - Line charts for time-series data
+  - Real-time value displays
+  - Hex/Binary data views
+  - Table views with signal details
+- Auto-updating displays with pause functionality
+- Layout persistence across sessions
+
+### Configuration Management
+- DBC file upload and management
+- CAN interface configuration
+- YAML-based logger settings
+- Assignment management for CAN sockets and DBC files
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 18.x or higher
+- npm/yarn/pnpm
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Installation
+
+1. Clone the repository
+```
+git clone git@github.com:YellowPirat/wireless-shark-frontend.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies
+```
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run the development server
+```
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Learn More
+### Building for Production
+5. Built static files
+```
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Usage
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Basic Setup
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Navigate to the Settings page
+2. Upload your DBC files
+3. Configure CAN interface assignments
+4. Start the logger for your desired interface
 
-## Deploy on Vercel
+### Creating Visualizations
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Go to the Live View page
+2. Select your CAN interface from the navigation menu
+3. Use the sidebar to add widgets:
+   - Choose a message from your DBC file
+   - Select signals to display
+   - Pick a visualization type
+4. Arrange widgets by dragging them on the dashboard
+5. Save your layout for future sessions
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Technical Details
+
+### Built With
+- [Next.js](https://nextjs.org/) - React Framework
+- [TypeScript](https://www.typescriptlang.org/) - Type Safety
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
+- [shadcn/ui](https://ui.shadcn.com/) - UI Components
+- [Recharts](https://recharts.org/) - Charting Library
+- [GridStack](https://gridstackjs.com/) - Grid Layout System
+
+### Architecture
+- Client-side DBC parsing
+- WebSocket-based real-time data streaming
+- Modular component structure
+- Responsive design
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Created by TI 5 in WiSe 2024/25
+
+## Support
+
+For support, please open an issue in the GitHub repository or contact the development team.
