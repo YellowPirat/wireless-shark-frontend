@@ -102,13 +102,14 @@ npm run build
 5. Open a Pull Request
 
 ## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Wireless Shark is distributed under the terms of the GPL-3.0 license.
 
 ## Acknowledgments
+Created by TI 5 in WiSe 2024/25
 
-- Created by TI 5 in WiSe 2024/25
-
-## Support
-
-For support, please open an issue in the GitHub repository or contact the development team.
+- Ahmet Emirhan Göktaş
+- Benjamin Klaric
+- Jannis Gröger
+- Mario Wegman
+- Maximilian Hoffmann
+- Stasa Lukic
