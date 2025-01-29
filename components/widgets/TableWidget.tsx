@@ -68,7 +68,7 @@ const Row = memo(({ data, index, style }: RowProps) => {
                 {payload}
             </div>
             <div className="flex-1 p-2">
-                <div className="space-y-1">
+                <div className="space-y-1 pb-4">
                     {message.signals ?
                         message.signals.map((signal, index) => (
                             <div key={index} className="text-sm">
